@@ -20,6 +20,7 @@ const store = createStore({
         activity_records: [],
         groups: [],
         challenges: [],
+        drinkRecords: []
     },
     getters: {
         userId: state => {

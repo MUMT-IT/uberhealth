@@ -45,7 +45,7 @@
                     Food
                   </ion-label>
                 </ion-item>
-                <ion-item inset="true" detail>
+                <ion-item inset="true" detail @click="$router.push({name:'Drink'})">
                   <ion-icon slot="start" :icon="wineOutline"></ion-icon>
                   <ion-label>
                     Drink
@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import liff from '@line/liff';
 import {
   waterOutline,
   alertCircleOutline,
@@ -159,21 +158,6 @@ export default defineComponent({
       alertCircleOutline,
       fastFoodOutline,
       wineOutline
-    }
-  },
-  data() {
-    return {
-      profile: {
-        'displayName': 'Likit',
-        'pictureUrl': ''
-      }
-    }
-  },
-  methods: {
-    getLineProfile: () => {
-      liff.getProfile().then(profile => {
-        this.profile = profile
-      })
     }
   },
   mounted() {
