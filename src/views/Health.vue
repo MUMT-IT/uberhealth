@@ -37,6 +37,23 @@
               </ion-item-group>
               <ion-item-group>
                 <ion-item-divider>
+                  <ion-label>Diet</ion-label>
+                </ion-item-divider>
+                <ion-item inset="true" detail>
+                  <ion-icon slot="start" :icon="fastFoodOutline"></ion-icon>
+                  <ion-label>
+                    Food
+                  </ion-label>
+                </ion-item>
+                <ion-item inset="true" detail>
+                  <ion-icon slot="start" :icon="wineOutline"></ion-icon>
+                  <ion-label>
+                    Drink
+                  </ion-label>
+                </ion-item>
+              </ion-item-group>
+              <ion-item-group>
+                <ion-item-divider>
                   <ion-label>Mind</ion-label>
                 </ion-item-divider>
                 <ion-item inset="true" detail href="/tabs/home">
@@ -93,7 +110,9 @@ import {
   flagOutline,
   scaleOutline,
   manOutline,
-  happyOutline
+  happyOutline,
+    fastFoodOutline,
+    wineOutline
 } from 'ionicons/icons';
 
 import {
@@ -137,7 +156,9 @@ export default defineComponent({
       trophyOutline,
       happyOutline,
       flagOutline,
-      alertCircleOutline
+      alertCircleOutline,
+      fastFoodOutline,
+      wineOutline
     }
   },
   data() {

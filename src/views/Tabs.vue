@@ -15,7 +15,7 @@
           <ion-icon :icon="barChart"></ion-icon>
           <ion-label>Ranking</ion-label>
         </ion-tab-button>
-        <ion-tab-button tab="health" href="/tabs/soon">
+        <ion-tab-button tab="health" href="/tabs/health">
           <ion-icon :icon="accessibility"></ion-icon>
           <ion-label>Health</ion-label>
         </ion-tab-button>
@@ -37,7 +37,7 @@ import {
   IonTabs,
   IonRouterOutlet,
   IonIcon
-} from '@ionic/vue';
+} from "@ionic/vue";
 import {defineComponent} from 'vue';
 import {home, personCircle, timer, bicycle, diamond, barChart, accessibility} from 'ionicons/icons';
 
