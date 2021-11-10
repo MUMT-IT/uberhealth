@@ -24,6 +24,58 @@
             </ion-list>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col>
+            <div class="ion-text-center">
+              <ion-button size="large" fill="clear" @click="water50">+</ion-button>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div class="ion-text-center">
+              <h2><h2><ion-label>{{ drinkwater }}</ion-label></h2></h2>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div class="ion-text-center">
+              <ion-button size="large" fill="clear" @click="water_50">-</ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <h5><ion-label>ทั้งวันควรดื่ม</ion-label></h5>
+          </ion-col>
+          <ion-col>
+            <div class="ion-text-center">
+              <h2><ion-label>1815</ion-label></h2>
+            </div>
+          </ion-col>
+          <ion-col>
+            <h2><ion-label>ml</ion-label></h2>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" @click="water1500">
+              1500 ml
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" @click="water600">
+              600 ml
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" @click="water100">
+              350 ml
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" color="success" @click="savedata">SAVE</ion-button>
+          </ion-col>
+        </ion-row>
 <!--        <ion-row>
           <ion-col>
             <ion-button expand="block" @click="$router.push({ name: 'WalkRecordForm' })">
@@ -49,18 +101,21 @@ import {
   IonRow,
   IonCol,
   IonText,
-  //IonButton,
+  IonButton,
   IonList,
   IonItem,
   IonFabButton,
   IonFab,
   IonLabel,
   IonIcon,
+  //IonInput
 } from '@ionic/vue';
 
 import {defineComponent} from 'vue';
 import { arrowBackCircle } from 'ionicons/icons'
 import {mapState} from "vuex";
+import { db } from '@/firebase'
+import { collection, addDoc,Timestamp } from '@firebase/firestore'
 
 export default defineComponent({
   name: "Drink",
@@ -71,25 +126,58 @@ export default defineComponent({
     IonRow,
     IonCol,
     IonText,
-    // IonButton,
+    IonButton,
     IonList,
     IonItem,
     IonLabel,
     IonFabButton,
     IonFab,
     IonIcon,
+    //IonInput
   },
   setup () {
     return {
       arrowBackCircle,
     }
   },
+  data(){
+    return{
+      drinkwater: 0
+    }
+  },
   computed: {
-    ...mapState(['user',"drinkRecords"]),
+    ...mapState(['user',"drink_records"]),
   },
   methods: {
     goToDetail () {
       this.$router.push({ name: 'Health'})
+    },
+    water1500(){
+      this.drinkwater += 1500
+    },
+    water600(){
+      this.drinkwater += 600
+    },
+    water100(){
+      this.drinkwater += 350
+    },
+    water50(){
+      this.drinkwater += 50
+    },
+    water_50(){
+      this.drinkwater -= 50
+    },
+    savedata(){
+      const ref = collection(db, 'drink_records')
+      let data ={
+        userId: this.$store.state.user.userId,
+        drinkwater: this.drinkwater,
+        drnkdate: Timestamp.fromDate(new Date())
+      }
+      addDoc(ref, data).then((docRef)=> {
+        data.id = docRef.id
+        this.$store.dispatch('addDrinkRecords', data)
+      })
     }
   }
 })

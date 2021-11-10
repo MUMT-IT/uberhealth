@@ -20,7 +20,7 @@ const store = createStore({
         activity_records: [],
         groups: [],
         challenges: [],
-        drinkRecords: []
+        drink_records: []
     },
     getters: {
         userId: state => {
@@ -57,6 +57,9 @@ const store = createStore({
         },
         ADD_USER_CHALLENGE(state, payload) {
             state.profile.challenges.push(payload)
+        },
+        Add_Drink(state,payload){
+            state.drink_records.push(payload)
         }
     },
     actions: {
@@ -80,7 +83,11 @@ const store = createStore({
         },
         addUserChallenge({ commit }, payload) {
             commit('ADD_USER_CHALLENGE', payload)
+        },
+        addDrinkRecords({ commit }, payload){
+            commit('Add_Drink', payload)
         }
+
     }
 })
 
