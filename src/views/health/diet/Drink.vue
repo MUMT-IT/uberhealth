@@ -7,7 +7,7 @@
             <ion-text>
               <div class="ion-text-center">
                 <h1>Drink Record</h1>
-                <p>{{ this.user.displayName }}</p>
+                <p>{{ $store.state.user.displayName }}</p>
               </div>
             </ion-text>
           </ion-col>
@@ -76,6 +76,18 @@
             <ion-button expand="block" color="success" @click="savedata">SAVE</ion-button>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-button @click="loaddrinkwater">load</ion-button>
+        </ion-row>
+        <ion-row>
+          <label>{{ DateN }}</label>
+        </ion-row>
+        <ion-row>
+          <label>{{ this.$store.state.drink_records.drinkwater }}</label>
+        </ion-row>
+        <ion-row>
+          <label>{{ this.$store.state.user.userId }}</label>
+        </ion-row>
 <!--        <ion-row>
           <ion-col>
             <ion-button expand="block" @click="$router.push({ name: 'WalkRecordForm' })">
@@ -107,15 +119,14 @@ import {
   IonFabButton,
   IonFab,
   IonLabel,
-  IonIcon,
-  //IonInput
+  IonIcon
 } from '@ionic/vue';
 
 import {defineComponent} from 'vue';
 import { arrowBackCircle } from 'ionicons/icons'
 import {mapState} from "vuex";
 import { db } from '@/firebase'
-import { collection, addDoc,Timestamp } from '@firebase/firestore'
+import { collection, addDoc,Timestamp,getDocs, query, where } from '@firebase/firestore'
 
 export default defineComponent({
   name: "Drink",
@@ -133,7 +144,6 @@ export default defineComponent({
     IonFabButton,
     IonFab,
     IonIcon,
-    //IonInput
   },
   setup () {
     return {
@@ -142,13 +152,30 @@ export default defineComponent({
   },
   data(){
     return{
-      drinkwater: 0
+      drinkwater: 0,
+      DateN: "",
     }
   },
   computed: {
-    ...mapState(['user',"drink_records"]),
+    ...mapState(['user', 'drink_records']),
+  },
+  watch: {
+    DateN: async function () {
+      await this.loaddrinkwater()
+    }
   },
   methods: {
+    async loaddrinkwater () {
+      let ref = collection(db, 'drink_records')
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId), where("datetxt", "==",this.DateN ))
+      let querySnapshot = await getDocs(q)
+      querySnapshot.forEach(d => {
+        let data = d.data()
+        data.id = d.id
+        this.$store.dispatch('updateDrink_Records', data)
+        this.drinkwater = this.$store.state.drink_records.drinkwater
+      })
+    },
     goToDetail () {
       this.$router.push({ name: 'Health'})
     },
@@ -172,13 +199,20 @@ export default defineComponent({
       let data ={
         userId: this.$store.state.user.userId,
         drinkwater: this.drinkwater,
-        drnkdate: Timestamp.fromDate(new Date())
+        drinkdate: Timestamp.fromDate(new Date()),
+        datetxt: this.DateN
       }
       addDoc(ref, data).then((docRef)=> {
         data.id = docRef.id
-        this.$store.dispatch('addDrinkRecords', data)
+        this.$store.dispatch('updateDrink_Records', data)
       })
     }
+  },
+  mounted() {
+    let strDateY = new Date().getFullYear()
+    let strDateM = new Date().getMonth()
+    let strDateD = new Date().getDay()
+    this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
   }
 })
 </script>

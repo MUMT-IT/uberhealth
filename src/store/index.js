@@ -20,7 +20,12 @@ const store = createStore({
         activity_records: [],
         groups: [],
         challenges: [],
-        drink_records: []
+        drink_records: {
+          datetxt: null,
+          drinkdate: null,
+          drinkwater: null,
+          userId: null
+        },
     },
     getters: {
         userId: state => {
@@ -34,7 +39,7 @@ const store = createStore({
         },
         JogRecords: state => {
             return state.activity_records.filter(d => d.type === 'jogging')
-        },
+        }
     },
     mutations: {
         SET_USER(state, user) {
@@ -58,8 +63,8 @@ const store = createStore({
         ADD_USER_CHALLENGE(state, payload) {
             state.profile.challenges.push(payload)
         },
-        Add_Drink(state,payload){
-            state.drink_records.push(payload)
+        SET_Drink(state,drink_records){
+            state.drink_records = drink_records
         }
     },
     actions: {
@@ -84,8 +89,8 @@ const store = createStore({
         addUserChallenge({ commit }, payload) {
             commit('ADD_USER_CHALLENGE', payload)
         },
-        addDrinkRecords({ commit }, payload){
-            commit('Add_Drink', payload)
+        updateDrink_Records({ commit }, drink_records){
+            commit('SET_Drink', drink_records)
         }
 
     }
