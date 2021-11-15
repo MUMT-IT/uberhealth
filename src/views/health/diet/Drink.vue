@@ -14,18 +14,6 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-list>
-              <ion-item detail v-for="record in drinkRecords"
-                        :key="record.id" @click="goToDetail(record.id)">
-                <ion-label>
-                  {{ record.startDateTime.toDate().toLocaleString() }}
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
             <div class="ion-text-center">
               <ion-button size="large" fill="clear" @click="water50">+</ion-button>
             </div>
@@ -77,13 +65,15 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <label>{{ DateN }}</label>
-        </ion-row>
-        <ion-row>
-          <label>{{ this.$store.state.drink_records.drinkwater }}</label>
-        </ion-row>
-        <ion-row>
-          <label>{{ this.IDDrink }}</label>
+          <ion-list>
+            <ion-item v-for="drinkrecord in drinkalldata.slice(0, 5)" :key="drinkrecord.id">
+              <label>Date {{ drinkrecord.drinkdate.toDate().toLocaleString() }}
+                <p>
+                ดื่มน้ำ {{ drinkrecord.drinkwater}} ml
+                </p>
+              </label>
+            </ion-item>
+          </ion-list>
         </ion-row>
 <!--        <ion-row>
           <ion-col>
@@ -153,6 +143,7 @@ export default defineComponent({
       drinkwater: 0,
       DateN: "",
       IDDrink: "",
+      drinkalldata: []
     }
   },
   computed: {
@@ -161,6 +152,7 @@ export default defineComponent({
   watch: {
     DateN: async function () {
       await this.loaddrinkwater()
+      await  this.loadDrinkWaterAll()
     }
   },
   methods: {
@@ -174,6 +166,16 @@ export default defineComponent({
         this.IDDrink = d.id
         this.$store.dispatch('updateDrink_Records', data)
         this.drinkwater = this.$store.state.drink_records.drinkwater
+      })
+    },
+    async loadDrinkWaterAll (){
+      let ref = collection(db,'drink_records')
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId))
+      let querySnapshot = await getDocs(q)
+      querySnapshot.forEach(d => {
+        let data = d.data()
+        data.id = d.id
+        this.drinkalldata.push(data)
       })
     },
     goToDetail () {
@@ -213,7 +215,7 @@ export default defineComponent({
   mounted() {
     let strDateY = new Date().getFullYear()
     let strDateM = new Date().getMonth()
-    let strDateD = new Date().getDay()
+    let strDateD = new Date().getDate()
     this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
   }
 })
