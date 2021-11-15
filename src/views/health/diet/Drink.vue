@@ -77,16 +77,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-button @click="loaddrinkwater">load</ion-button>
-        </ion-row>
-        <ion-row>
           <label>{{ DateN }}</label>
         </ion-row>
         <ion-row>
           <label>{{ this.$store.state.drink_records.drinkwater }}</label>
         </ion-row>
         <ion-row>
-          <label>{{ this.$store.state.user.userId }}</label>
+          <label>{{ this.IDDrink }}</label>
         </ion-row>
 <!--        <ion-row>
           <ion-col>
@@ -127,6 +124,7 @@ import { arrowBackCircle } from 'ionicons/icons'
 import {mapState} from "vuex";
 import { db } from '@/firebase'
 import { collection, addDoc,Timestamp,getDocs, query, where } from '@firebase/firestore'
+import {deleteDoc, doc} from "firebase/firestore";
 
 export default defineComponent({
   name: "Drink",
@@ -154,6 +152,7 @@ export default defineComponent({
     return{
       drinkwater: 0,
       DateN: "",
+      IDDrink: "",
     }
   },
   computed: {
@@ -172,6 +171,7 @@ export default defineComponent({
       querySnapshot.forEach(d => {
         let data = d.data()
         data.id = d.id
+        this.IDDrink = d.id
         this.$store.dispatch('updateDrink_Records', data)
         this.drinkwater = this.$store.state.drink_records.drinkwater
       })
@@ -202,6 +202,8 @@ export default defineComponent({
         drinkdate: Timestamp.fromDate(new Date()),
         datetxt: this.DateN
       }
+      const del = doc(db, 'drink_records', this.IDDrink)
+      deleteDoc(del)
       addDoc(ref, data).then((docRef)=> {
         data.id = docRef.id
         this.$store.dispatch('updateDrink_Records', data)
