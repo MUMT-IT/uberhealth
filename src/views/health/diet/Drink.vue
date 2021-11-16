@@ -151,12 +151,12 @@ export default defineComponent({
   },
   watch: {
     DateN: async function () {
-      await this.loaddrinkwater()
+      await this.loaddrinkwaterDay()
       await  this.loadDrinkWaterAll()
     }
   },
   methods: {
-    async loaddrinkwater () {
+    async loaddrinkwaterDay () {
       let ref = collection(db, 'drink_records')
       let q = query(ref, where("userId", "==", this.$store.state.user.userId), where("datetxt", "==",this.DateN ))
       let querySnapshot = await getDocs(q)
@@ -204,12 +204,15 @@ export default defineComponent({
         drinkdate: Timestamp.fromDate(new Date()),
         datetxt: this.DateN
       }
-      const del = doc(db, 'drink_records', this.IDDrink)
-      deleteDoc(del)
-      addDoc(ref, data).then((docRef)=> {
-        data.id = docRef.id
-        this.$store.dispatch('updateDrink_Records', data)
-      })
+      if (this.IDDrink !== "") {
+        const del = doc(db, 'drink_records', this.IDDrink)
+        deleteDoc(del)
+      }
+        addDoc(ref, data).then((docRef)=> {
+          data.id = docRef.id
+          this.$store.dispatch('updateDrink_Records', data)
+          this.loaddrinkwaterDay()
+        })
     }
   },
   mounted() {
