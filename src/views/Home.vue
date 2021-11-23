@@ -192,8 +192,7 @@ export default defineComponent({
       let querySnapshot = await getDocs(q)
       let docSnapshot = querySnapshot.docs[0]
       let data = docSnapshot.data()
-      this.weight = data.weight
-      this.$store.dispatch('updateWeight',data)
+      this.$store.dispatch('updateWeight',data.weight)
       console.log(data)
     },
   },

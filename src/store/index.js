@@ -26,10 +26,7 @@ const store = createStore({
           drinkwater: null,
           userId: null
         },
-        weight:{
-            weight: null,
-            weightdate: null
-        }
+        currentWeight:null,
     },
     getters: {
         userId: state => {
@@ -43,9 +40,6 @@ const store = createStore({
         },
         JogRecords: state => {
             return state.activity_records.filter(d => d.type === 'jogging')
-        },
-        weightReord: state => {
-            return state.weight.weight
         }
     },
     mutations: {
@@ -74,7 +68,7 @@ const store = createStore({
             state.drink_records = drink_records
         },
         SET_Weight(state,weight){
-            state.weight = weight
+            state.currentWeight = weight
         }
     },
     actions: {

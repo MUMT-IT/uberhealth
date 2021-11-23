@@ -18,7 +18,7 @@
          <ion-list>
            <ion-item>
              <ion-label> weight </ion-label>
-             <ion-input type="number" placeholder="99.5" v-model="weight"></ion-input>
+             <ion-input type="number" placeholder="99.5" v-model="newWeight"></ion-input>
              <ion-label> kg </ion-label>
            </ion-item>
          </ion-list>
@@ -69,7 +69,7 @@ export default {
     return {
       DateNow: "",
       DateN: "",
-      weight: "",
+      newWeight: null,
     }
   },
   setup () {
@@ -78,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'weight']),
+    ...mapState(['user']),
   },
   methods:{
     savedata(){
@@ -87,7 +87,7 @@ export default {
         userId: this.$store.state.user.userId,
         weightdate: Timestamp.fromDate(new Date()),
         datetxt: this.DateN,
-        weight: this.weight
+        weight: this.newWeight
       }
       addDoc(ref, data).then((docRef)=> {
         data.id = docRef.id
@@ -98,7 +98,7 @@ export default {
     let strDateM = new Date().getMonth()
     let strDateD = new Date().getDate()
     this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
-    this.weight = this.$store.state.weight.weight
+    this.newWeight = this.$store.state.currentWeight
   }
 }
 </script>
