@@ -125,6 +125,7 @@ export default defineComponent({
       await this.loadGroups(newValue.userId)
       await this.loadChallenges()
       await this.loadActivities(newValue.userId)
+      await  this.loadweight()
     }
   },
   methods: {
@@ -178,7 +179,23 @@ export default defineComponent({
           this.$store.dispatch('addChallenge', data)
         })
       }
-    }
+    },
+    async loadweight () {
+      let strDateY = new Date().getFullYear()
+      let strDateM = new Date().getMonth()
+      let strDateD = new Date().getDate()
+      let DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
+
+      let ref = collection(db, 'weight')
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId), where("datetxt", "==",DateN),
+          orderBy('weightdate','desc'))
+      let querySnapshot = await getDocs(q)
+      let docSnapshot = querySnapshot.docs[0]
+      let data = docSnapshot.data()
+      this.weight = data.weight
+      this.$store.dispatch('updateWeight',data)
+      console.log(data)
+    },
   },
 });
 </script>

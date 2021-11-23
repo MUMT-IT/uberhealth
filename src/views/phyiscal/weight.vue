@@ -18,7 +18,7 @@
          <ion-list>
            <ion-item>
              <ion-label> weight </ion-label>
-             <ion-input type="number" placeholder="70.5" v-model="weight"></ion-input>
+             <ion-input type="number" placeholder="99.5" v-model="weight"></ion-input>
              <ion-label> kg </ion-label>
            </ion-item>
          </ion-list>
@@ -50,6 +50,7 @@ import {
   IonButton
 } from '@ionic/vue';
 import {db} from "@/firebase";
+import {mapState} from "vuex";
 export default {
   name: "weight",
   components :{
@@ -64,17 +65,20 @@ export default {
     IonText,
     IonButton
   },
-  date(){
+  data(){
     return {
       DateNow: "",
       DateN: "",
-      weight: ""
+      weight: "",
     }
   },
   setup () {
     return {
       arrowBackCircle,
     }
+  },
+  computed: {
+    ...mapState(['user', 'weight']),
   },
   methods:{
     savedata(){
@@ -94,6 +98,7 @@ export default {
     let strDateM = new Date().getMonth()
     let strDateD = new Date().getDate()
     this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
+    this.weight = this.$store.state.weight.weight
   }
 }
 </script>
