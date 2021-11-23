@@ -23,7 +23,7 @@
                     <p>ผลการตรวจทางห้องปฏิบัติการ</p>
                   </ion-label>
                 </ion-item>
-                <ion-item inset="true" detail href="/tabs/home">
+                <ion-item inset="true" detail @click="$router.push({name:'weight'})">
                   <ion-icon slot="start" :icon="scaleOutline"></ion-icon>
                   <ion-label>
                     Weight

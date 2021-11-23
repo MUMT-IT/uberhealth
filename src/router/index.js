@@ -127,6 +127,11 @@ const routes = [
     name: 'Drink',
     component: () => import('../views/health/diet/Drink')
   },
+  {
+    path: '/physical/weight',
+    name: 'weight',
+    component: () => import('../views/phyiscal/weight')
+  }
 ]
 
 const router = createRouter({
