@@ -35,7 +35,7 @@
           </ion-col>
           <ion-col>
             <div class="ion-text-center">
-              <h2><ion-label>1815</ion-label></h2>
+              <h2><ion-label>{{ water_weight }}</ion-label></h2>
             </div>
           </ion-col>
           <ion-col>
@@ -143,7 +143,8 @@ export default defineComponent({
       drinkwater: 0,
       DateN: "",
       IDDrink: "",
-      drinkalldata: []
+      drinkalldata: [],
+      water_weight: 0
     }
   },
   computed: {
@@ -220,6 +221,11 @@ export default defineComponent({
     let strDateM = new Date().getMonth()
     let strDateD = new Date().getDate()
     this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
+    if (this.$store.state.currentWeight !== null){
+      this.water_weight = this.$store.state.currentWeight * 33
+    }else{
+      this.water_weight = 1500
+    }
   }
 })
 </script>

@@ -181,19 +181,15 @@ export default defineComponent({
       }
     },
     async loadweight () {
-      let strDateY = new Date().getFullYear()
-      let strDateM = new Date().getMonth()
-      let strDateD = new Date().getDate()
-      let DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
-
       let ref = collection(db, 'weight')
-      let q = query(ref, where("userId", "==", this.$store.state.user.userId), where("datetxt", "==",DateN),
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId),
           orderBy('weightdate','desc'))
       let querySnapshot = await getDocs(q)
-      let docSnapshot = querySnapshot.docs[0]
-      let data = docSnapshot.data()
-      this.$store.dispatch('updateWeight',data.weight)
-      console.log(data)
+      if (querySnapshot.docs.length!==0){
+        let docSnapshot = querySnapshot.docs[0]
+        let data = docSnapshot.data()
+        this.$store.dispatch('updateWeight',data.weight)
+      }
     },
   },
 });
