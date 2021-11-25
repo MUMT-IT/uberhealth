@@ -131,6 +131,11 @@ const routes = [
     path: '/physical/weight',
     name: 'weight',
     component: () => import('../views/phyiscal/weight')
+  },
+  {
+    path: '/diet/foodsearch',
+    name: 'foodsearch',
+    component: () => import('../views/health/diet/FoodSearch')
   }
 ]
 

@@ -35,7 +35,7 @@
           </ion-col>
           <ion-col>
             <div class="ion-text-center">
-              <h2><ion-label>{{ water_weight }}</ion-label></h2>
+              <h2><ion-label>{{ $store.state.currentWeight * 33 }}</ion-label></h2>
             </div>
           </ion-col>
           <ion-col>

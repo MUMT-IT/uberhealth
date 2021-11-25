@@ -39,7 +39,7 @@
                 <ion-item-divider>
                   <ion-label>Diet</ion-label>
                 </ion-item-divider>
-                <ion-item inset="true" detail>
+                <ion-item inset="true" detail @click="$router.push({name:'foodsearch'})">
                   <ion-icon slot="start" :icon="fastFoodOutline"></ion-icon>
                   <ion-label>
                     Food
