@@ -55,6 +55,16 @@
                   <ion-progress-bar :value="counts['biking']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
+              <ion-item detail router-link="/activities/dance-records">
+                <ion-thumbnail slot="start">
+                  <img src="https://source.unsplash.com/3ckWUnaCxzc">
+                </ion-thumbnail>
+                <ion-label>
+                  Dancing
+                  <p>เต้นแอโรบิก ลีลาศ ซุมบ้า</p>
+                  <ion-progress-bar :value="counts['dancing']/total"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
               <!--
               <ion-item detail router-link="/activities/swim-records">
                 <ion-thumbnail slot="start">
@@ -132,7 +142,8 @@ export default defineComponent({
         walking: 0,
         jogging: 0,
         swimming: 0,
-        biking: 0
+        biking: 0,
+        dancing: 0
       },
       total: 0
     }

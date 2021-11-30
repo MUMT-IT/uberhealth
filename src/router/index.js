@@ -118,6 +118,21 @@ const routes = [
     component: () => import('../views/activities/BikeRecordForm')
   },
   {
+    path: '/activities/dance-records',
+    name: 'DanceRecord',
+    component: () => import('../views/activities/DanceRecord')
+  },
+  {
+    path: '/activities/dance-record-form',
+    name: 'DanceRecordForm',
+    component: () => import('../views/activities/DanceRecordForm')
+  },
+  {
+    path: '/activities/dance-record-detail/:recordId',
+    name: 'DanceRecordDetail',
+    component: () => import('../views/activities/DanceRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
