@@ -6,7 +6,7 @@
           <ion-col>
             <ion-text>
               <div class="ion-text-center">
-                <h1>Walk Record Detail</h1>
+                <h3>Walk Record Detail</h3>
               </div>
             </ion-text>
           </ion-col>

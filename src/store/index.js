@@ -43,7 +43,10 @@ const store = createStore({
         },
         swimRecords: state => {
             return state.activity_records.filter(d => d.type === 'swimming')
-        }
+        },
+        BikeRecords: state => {
+            return state.activity_records.filter(d => d.type === 'biking')
+        },
     },
     mutations: {
         SET_USER(state, user) {

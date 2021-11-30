@@ -14,11 +14,13 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in JogRecords" :key="record.id" @click="goToDetail(record.id)">
+              <ion-item detail v-for="record in JogRecords.slice(0, 7)" :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
                   <p>
-                    Distance {{ record.distance }} km, Est. calories {{ record.estimatedCalories.toFixed(1) }}
+                    {{ record.distance }} km,
+                    {{ record.min }} min,
+                    {{ record.estimatedCalories.toFixed(1) }} Cal
                   </p>
                 </ion-label>
               </ion-item>

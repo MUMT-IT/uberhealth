@@ -6,7 +6,7 @@
           <ion-col>
             <ion-text>
               <div class="ion-text-center">
-                <h1>Jog Record Detail</h1>
+                <h3>Jog Record Detail</h3>
               </div>
             </ion-text>
           </ion-col>
