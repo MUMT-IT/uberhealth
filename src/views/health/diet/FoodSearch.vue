@@ -61,8 +61,18 @@
             <ion-label slot="end">Kcal</ion-label>
           </ion-item>
         </ion-row>
+        <ion-row>
+          <ion-item>
+            <ion-label slot="start">Unit</ion-label>
+            <ion-input placeholder="300"></ion-input>
+            <ion-label slot="end">g</ion-label>
+          </ion-item>
+        </ion-row>
       </ion-grid>
       <ion-button expand="block" color="success" >เพิ่มรายการ</ion-button>
+      <p>
+        <label>สารอาหารทั้งวัน</label>
+      </p>
     </ion-content>
   </ion-page>
 </template>
