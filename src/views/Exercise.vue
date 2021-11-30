@@ -35,6 +35,16 @@
                   <ion-progress-bar :value="counts['jogging']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
+              <ion-item detail router-link="/activities/swim-records">
+                <ion-thumbnail slot="start">
+                  <img src="https://source.unsplash.com/JjUyjE-oEbM">
+                </ion-thumbnail>
+                <ion-label>
+                  Swiming
+                  <p>ว่ายน้ำ</p>
+                  <ion-progress-bar :value="counts['swimming']/total"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
               <!--
               <ion-item detail router-link="/activities/swim-records">
                 <ion-thumbnail slot="start">
