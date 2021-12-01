@@ -193,6 +193,21 @@ const routes = [
     component: () => import('../views/activities/BodyWeightRecordDetail')
   },
   {
+    path: '/activities/weighttraining-records',
+    name: 'WeightTrainingRecord',
+    component: () => import('../views/activities/WeightTrainingRecord')
+  },
+  {
+    path: '/activities/weighttraining-record-form',
+    name: 'WeightTrainingRecordForm',
+    component: () => import('../views/activities/WeightTrainingRecordForm')
+  },
+  {
+    path: '/activities/weighttraining-record-detail/:recordId',
+    name: 'WeightTrainingRecordDetail',
+    component: () => import('../views/activities/WeightTrainingRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')

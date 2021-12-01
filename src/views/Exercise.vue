@@ -90,8 +90,8 @@
                   <img src="https://source.unsplash.com/HC1I-tgIDq0">
                 </ion-thumbnail>
                 <ion-label>
-                  Jump Rope
-                  <p>โดดเชือก</p>
+                  Hula Hoop
+                  <p>ฮูล่าฮูป</p>
                   <ion-progress-bar :value="counts['hulahoop']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
@@ -103,6 +103,16 @@
                   Body Weight
                   <p>บอร์ดี้เวท</p>
                   <ion-progress-bar :value="counts['bodyweight']/total"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
+              <ion-item detail router-link="/activities/weighttraining-records">
+                <ion-thumbnail slot="start">
+                  <img src="https://source.unsplash.com/FP7cfYPPUKM">
+                </ion-thumbnail>
+                <ion-label>
+                  Weight Training
+                  <p>เวทเทรนนิ่ง</p>
+                  <ion-progress-bar :value="counts['weightTraining']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
               <!--
@@ -157,7 +167,8 @@ export default defineComponent({
         sport: 0,
         jumprope: 0,
         hulahoop: 0,
-        bodyweight: 0
+        bodyweight: 0,
+        weightTraining: 0
       },
       total: 0
     }
@@ -177,7 +188,8 @@ export default defineComponent({
       this.counts.sport = 0,
       this.counts.jumprope = 0,
       this.counts.hulahoop = 0,
-      this.counts.bodyweight = 0
+      this.counts.bodyweight = 0,
+      this.counts.weightTraining = 0
       this.activity_records.forEach(d=>{
         this.total++
         this.counts[d.type]++
