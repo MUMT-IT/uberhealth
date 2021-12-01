@@ -6,7 +6,7 @@
           <ion-col>
             <ion-text>
               <div class="ion-text-center">
-                <h3>Jog Record Detail</h3>
+                <h3>Hula Hoop Record Detail</h3>
               </div>
             </ion-text>
           </ion-col>
@@ -20,10 +20,10 @@
                     {{ record.startDateTime.toDate().toLocaleString() }}
                   </p>
                   <p>
-                    Distance {{ record.distance }} km
+                    Time {{ record.min }} min
                   </p>
                   <p>
-                    Estimated Calories {{ record.estimatedCalories.toFixed(1) }}
+                    Estimated Calories {{ record.estimatedCalories }}
                   </p>
                   <p>
                     Calories {{ record.calories }}
@@ -81,7 +81,7 @@
         </ion-row>
       </ion-grid>
       <ion-fab vertical="top" horizontal="start" slot="fixed">
-        <ion-fab-button @click="$router.push({ name: 'JogRecord' })">
+        <ion-fab-button @click="$router.push({ name: 'HulaHoopRecord' })">
           <ion-icon :icon="arrowBackCircle"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -117,7 +117,7 @@ import {doc, getDoc, getDocs, collection, deleteDoc, query, where, addDoc } from
 import {mapState} from "vuex";
 
 export default defineComponent({
-  name: "JogRecordDetail",
+  name: "HulaHoopRecordDetail",
   components: {
     IonContent,
     IonPage,
@@ -145,9 +145,9 @@ export default defineComponent({
     return {
       record: {
         startDateTime: null,
-        distances: 0,
-        estimatedCalories: 0,
-        calories: 0,
+        min: null,
+        estimatedCalories: null,
+        calories: null,
       },
       challenges: [],
       submissions: [],
@@ -168,8 +168,8 @@ export default defineComponent({
   },
   watch: {
     'route.params.recordId': async function() {
-      const recordId = this.route.params.recordId
       this.reset()
+      const recordId = this.route.params.recordId
       if (recordId !== null && recordId !== undefined) {
         let ref = collection(db, 'activity_submission')
         let q = query(ref, where('recordId', '==', recordId))
@@ -210,7 +210,7 @@ export default defineComponent({
         deleteDoc(ref).then(async () => {
           await this.presentAlert()
           this.$store.dispatch('deleteActivity', this.record.id)
-          this.$router.push({ name: 'JogRecord' })
+          this.$router.push({ name: 'HulaHoopRecord' })
         })
       }
     },
@@ -253,7 +253,7 @@ export default defineComponent({
       await alert.onDidDismiss();
     },
   },
-  async mounted() {
+  mounted() {
     this.route = useRoute()
   }
 })

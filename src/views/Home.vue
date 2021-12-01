@@ -125,6 +125,7 @@ export default defineComponent({
       await this.loadGroups(newValue.userId)
       await this.loadChallenges()
       await this.loadActivities(newValue.userId)
+      await  this.loadweight()
     }
   },
   methods: {
@@ -178,7 +179,18 @@ export default defineComponent({
           this.$store.dispatch('addChallenge', data)
         })
       }
-    }
+    },
+    async loadweight () {
+      let ref = collection(db, 'weight')
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId),
+          orderBy('weightdate','desc'))
+      let querySnapshot = await getDocs(q)
+      if (querySnapshot.docs.length!==0){
+        let docSnapshot = querySnapshot.docs[0]
+        let data = docSnapshot.data()
+        this.$store.dispatch('updateWeight',data.weight)
+      }
+    },
   },
 });
 </script>

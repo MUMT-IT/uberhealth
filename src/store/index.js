@@ -26,6 +26,7 @@ const store = createStore({
           drinkwater: null,
           userId: null
         },
+        currentWeight:null,
     },
     getters: {
         userId: state => {
@@ -39,7 +40,31 @@ const store = createStore({
         },
         JogRecords: state => {
             return state.activity_records.filter(d => d.type === 'jogging')
-        }
+        },
+        swimRecords: state => {
+            return state.activity_records.filter(d => d.type === 'swimming')
+        },
+        BikeRecords: state => {
+            return state.activity_records.filter(d => d.type === 'biking')
+        },
+        DanceRecords: state => {
+            return state.activity_records.filter(d => d.type === 'dancing')
+        },
+        SportRecords: state => {
+            return state.activity_records.filter(d => d.type === 'sport')
+        },
+        JumpRopeRecords: state => {
+            return state.activity_records.filter(d => d.type === 'jump rope')
+        },
+        HulaHoopRecords: state => {
+            return state.activity_records.filter(d => d.type === 'hulahoop')
+        },
+        BodyWeightRecords: state => {
+            return state.activity_records.filter(d => d.type === 'bodyweight')
+        },
+        WeightTrainingRecords: state => {
+            return state.activity_records.filter(d => d.type === 'weightTraining')
+        },
     },
     mutations: {
         SET_USER(state, user) {
@@ -65,6 +90,9 @@ const store = createStore({
         },
         SET_Drink(state,drink_records){
             state.drink_records = drink_records
+        },
+        SET_Weight(state,weight){
+            state.currentWeight = weight
         }
     },
     actions: {
@@ -91,6 +119,9 @@ const store = createStore({
         },
         updateDrink_Records({ commit }, drink_records){
             commit('SET_Drink', drink_records)
+        },
+        updateWeight({commit},weight){
+            commit('SET_Weight', weight)
         }
 
     }

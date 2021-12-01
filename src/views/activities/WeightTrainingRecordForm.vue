@@ -5,7 +5,7 @@
         <ion-row>
           <ion-col>
             <ion-text>
-              <h1>Walk Record</h1>
+              <h2>Weight Training Record</h2>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -23,17 +23,52 @@
                 <ion-label position="floating">Start</ion-label>
                 <ion-datetime display-format="MMM DD, YYYY HH:mm" v-model="startDateTime"></ion-datetime>
               </ion-item>
+              <ion-item>
+                <h3>Muscle</h3>
+              </ion-item>
+              <ion-item>
+                <ion-list>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="chest"></ion-checkbox>
+                    <ion-label>Chest</ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="deltoids"></ion-checkbox>
+                    <ion-label>Deltoids</ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="muscleback"></ion-checkbox>
+                    <ion-label>Back</ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="legsandCalf"></ion-checkbox>
+                    <ion-label>Legs and Calf</ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="bicepsAndTriceps"></ion-checkbox>
+                    <ion-label>Biceps and Triceps  </ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-checkbox slot="start" v-model="abdominal"></ion-checkbox>
+                    <ion-label>Abdominal</ion-label>
+                  </ion-item>
+                </ion-list>
+              </ion-item>
+              <ion-item class="ion-margin-bottom">
+                <ion-label position="floating">Weight Using (kg)</ion-label>
+                <ion-input type="text" v-model="weightusing" placeholder="น้ำหนักที่ใช้หน่วยเป็นกิโลกรัม"></ion-input>
+              </ion-item>
+              <ion-item class="ion-margin-bottom">
+                <ion-label position="floating">Repetition</ion-label>
+                <ion-input type="number" min="0" step="100" v-model="reps" placeholder="จำนวนครั้งที่ทำได้"></ion-input>
+              </ion-item>
+              <ion-item class="ion-margin-bottom">
+                <ion-label position="floating">SET</ion-label>
+                <ion-input type="number" min="0" step="100" v-model="countset" placeholder="จำนวนชุด"></ion-input>
+              </ion-item>
               <ion-item class="ion-margin-bottom">
                 <ion-label position="floating">Time (min)</ion-label>
-                <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
-              </ion-item>
-              <ion-item>
-                <ion-label position="floating">Steps</ion-label>
-                <ion-input type="number" min="1" step="1" v-model="steps" placeholder="จำนวนก้าวโดยประมาณ"></ion-input>
-              </ion-item>
-              <ion-item>
-                <ion-label position="floating">Distance (km)</ion-label>
-                <ion-input type="number" min="0.1" step="0.1" v-model="distance" placeholder="ระยะทางหน่วยกิโลเมตร"></ion-input>
+                <ion-input type="number" min="0" step="100" v-model="min" placeholder="ใช้เวลาทั้งหมด(นาที)"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">Calculated calories</ion-label>
@@ -86,6 +121,7 @@ import {
   IonLabel,
   IonRange,
   IonIcon, alertController,
+  IonCheckbox
 } from '@ionic/vue';
 
 import { helpCircleOutline } from 'ionicons/icons'
@@ -94,7 +130,7 @@ import { db } from '../../firebase'
 import { collection, addDoc, Timestamp } from '@firebase/firestore'
 
 export default defineComponent({
-  name: "WalkRecordForm",
+  name: "WeightTrainingRecordForm",
   components: {
     IonIcon,
     IonContent,
@@ -111,6 +147,7 @@ export default defineComponent({
     IonListHeader,
     IonLabel,
     IonRange,
+    IonCheckbox
   },
   setup () {
     return {
@@ -120,25 +157,32 @@ export default defineComponent({
   data () {
     return {
       startDateTime: new Date().toISOString(),
+      weightusing : '',
       min: 0,
-      distance: 0,
-      steps: 0,
+      reps: 0,
+      countset: 0,
       calories: 0,
       intensity: 1,
+      chest: false,
+      deltoids: false,
+      muscleback: false,
+      legsandCalf: false,
+      bicepsAndTriceps: false,
+      abdominal: false,
+      muscle:[]
     }
   },
   computed: {
     isFormValid () {
       return (this.startDateTime != '' || this.startDateTime != null)
-          && (this.min != '' || this.min != null)
+          && (this.min != 0 || this.min != null)
           && (this.estimatedCal > 0)
-          && (this.steps > 0)
     },
     estimatedCal () {
       let Cainten = 1
       if( this.intensity == 2){Cainten = 1.5}
       if( this.intensity == 2){Cainten = 2}
-      return (this.min * 135) / 30 * Cainten
+      return (this.min * 90) / 30 * Cainten
     },
   },
   methods: {
@@ -157,31 +201,36 @@ export default defineComponent({
       console.log('onDidDismiss resolved with role', role);
     },
     saveData () {
+      if(this.chest==true){this.muscle.push('Chest')}
+      if(this.deltoids==true){this.muscle.push('Deltoids')}
+      if(this.muscleback==true){this.muscle.push('Back')}
+      if(this.legsandCalf==true){this.muscle.push('Legs and Calf')}
+      if(this.bicepsAndTriceps==true){this.muscle.push('Biceps and Triceps')}
+      if(this.abdominal==true){this.muscle.push('Abdominal')}
+
       if (this.isFormValid) {
         const ref = collection(db, 'activity_records')
         let data = {
           userId: this.$store.state.user.userId,
           startDateTime: Timestamp.fromDate(new Date(this.startDateTime)),
+          muscle: this.muscle,
+          weightusing: this.weightusing,
+          reps: this.reps,
+          countset: this.countset,
           min: this.min,
-          distance: this.distance,
-          steps: this.steps,
           calories: this.calories,
           estimatedCalories: this.estimatedCal,
           createdAt: Timestamp.fromDate(new Date()),
-          type: 'walking',
-          ExerType: 'Cardio'
+          type: 'weightTraining',
+          ExerType: 'Resistance'
         }
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
           this.$store.dispatch('addActivity',  data)
-          this.$router.push({ name: 'WalkRecord' })
+          this.$router.push({ name: 'WeightTrainingRecord' })
         })
       }
     }
-  },
-  mounted() {
-    console.log(this.$store.state.user)
-    console.log(this.$store.state.activity_records.length)
   }
 })
 </script>

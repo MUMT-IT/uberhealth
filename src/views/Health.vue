@@ -23,7 +23,7 @@
                     <p>ผลการตรวจทางห้องปฏิบัติการ</p>
                   </ion-label>
                 </ion-item>
-                <ion-item inset="true" detail href="/tabs/home">
+                <ion-item inset="true" detail @click="$router.push({name:'weight'})">
                   <ion-icon slot="start" :icon="scaleOutline"></ion-icon>
                   <ion-label>
                     Weight
@@ -39,7 +39,7 @@
                 <ion-item-divider>
                   <ion-label>Diet</ion-label>
                 </ion-item-divider>
-                <ion-item inset="true" detail>
+                <ion-item inset="true" detail @click="$router.push({name:'foodsearch'})">
                   <ion-icon slot="start" :icon="fastFoodOutline"></ion-icon>
                   <ion-label>
                     Food

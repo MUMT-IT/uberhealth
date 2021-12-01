@@ -5,7 +5,7 @@
         <ion-row>
           <ion-col>
             <ion-text>
-              <h1>Walk Record</h1>
+              <h1>Jump Rope Record</h1>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -28,12 +28,8 @@
                 <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
               </ion-item>
               <ion-item>
-                <ion-label position="floating">Steps</ion-label>
-                <ion-input type="number" min="1" step="1" v-model="steps" placeholder="จำนวนก้าวโดยประมาณ"></ion-input>
-              </ion-item>
-              <ion-item>
-                <ion-label position="floating">Distance (km)</ion-label>
-                <ion-input type="number" min="0.1" step="0.1" v-model="distance" placeholder="ระยะทางหน่วยกิโลเมตร"></ion-input>
+                <ion-label position="floating">Counter</ion-label>
+                <ion-input type="number" min="0" step="100" v-model="jumpCounter" placeholder="จำนวนครั้งที่โดด"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">Calculated calories</ion-label>
@@ -94,7 +90,7 @@ import { db } from '../../firebase'
 import { collection, addDoc, Timestamp } from '@firebase/firestore'
 
 export default defineComponent({
-  name: "WalkRecordForm",
+  name: "JumpRopeRecordForm",
   components: {
     IonIcon,
     IonContent,
@@ -121,8 +117,7 @@ export default defineComponent({
     return {
       startDateTime: new Date().toISOString(),
       min: 0,
-      distance: 0,
-      steps: 0,
+      jumpCounter: 0,
       calories: 0,
       intensity: 1,
     }
@@ -130,15 +125,14 @@ export default defineComponent({
   computed: {
     isFormValid () {
       return (this.startDateTime != '' || this.startDateTime != null)
-          && (this.min != '' || this.min != null)
+          && (this.min != 0 || this.min != null)
           && (this.estimatedCal > 0)
-          && (this.steps > 0)
     },
     estimatedCal () {
       let Cainten = 1
       if( this.intensity == 2){Cainten = 1.5}
       if( this.intensity == 2){Cainten = 2}
-      return (this.min * 135) / 30 * Cainten
+      return (this.min * 300) / 30 * Cainten
     },
   },
   methods: {
@@ -163,18 +157,17 @@ export default defineComponent({
           userId: this.$store.state.user.userId,
           startDateTime: Timestamp.fromDate(new Date(this.startDateTime)),
           min: this.min,
-          distance: this.distance,
-          steps: this.steps,
+          jumpCounter: this.jumpCounter,
           calories: this.calories,
           estimatedCalories: this.estimatedCal,
           createdAt: Timestamp.fromDate(new Date()),
-          type: 'walking',
+          type: 'jumprope',
           ExerType: 'Cardio'
         }
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
           this.$store.dispatch('addActivity',  data)
-          this.$router.push({ name: 'WalkRecord' })
+          this.$router.push({ name: 'JumpRopeRecord' })
         })
       }
     }
