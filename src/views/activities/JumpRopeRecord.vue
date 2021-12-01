@@ -20,8 +20,8 @@
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
                   <p>
-                    {{ record.distance }} km,
                     {{ record.min }} min,
+                    {{ record.jumpCounter }} jump,
                     {{ record.estimatedCalories.toFixed(1) }} Cal
                   </p>
                 </ion-label>

@@ -23,13 +23,13 @@
                 <ion-label position="floating">Start</ion-label>
                 <ion-datetime display-format="MMM DD, YYYY HH:mm" v-model="startDateTime"></ion-datetime>
               </ion-item>
-              <ion-item class="ion-margin-bottom">
-                <ion-label position="floating">Time (min)</ion-label>
-                <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
-              </ion-item>
               <ion-item>
                 <ion-label position="floating">Sport Name</ion-label>
                 <ion-input type="text"  v-model="sportName" placeholder="ชื่อกีฬา"></ion-input>
+              </ion-item>
+              <ion-item class="ion-margin-bottom">
+                <ion-label position="floating">Time (min)</ion-label>
+                <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">Calculated calories</ion-label>
@@ -162,7 +162,7 @@ export default defineComponent({
           calories: this.calories,
           estimatedCalories: this.estimatedCal,
           createdAt: Timestamp.fromDate(new Date()),
-          type: 'Sport',
+          type: 'sport',
           ExerType: 'Cardio'
         }
         addDoc(ref, data).then((docRef)=>{

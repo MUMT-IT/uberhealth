@@ -148,6 +148,21 @@ const routes = [
     component: () => import('../views/activities/SportRecordDetail')
   },
   {
+    path: '/activities/jumprope-records',
+    name: 'JumpRopeRecord',
+    component: () => import('../views/activities/JumpRopeRecord')
+  },
+  {
+    path: '/activities/jumprope-record-form',
+    name: 'JumpRopeRecordForm',
+    component: () => import('../views/activities/JumpRopeRecordForm')
+  },
+  {
+    path: '/activities/jumprope-record-detail/:recordId',
+    name: 'JumpRopeRecordDetail',
+    component: () => import('../views/activities/JumpRopeRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')

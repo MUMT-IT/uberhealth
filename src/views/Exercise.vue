@@ -75,6 +75,16 @@
                   <ion-progress-bar :value="counts['sport']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
+              <ion-item detail router-link="/activities/jumprope-records">
+                <ion-thumbnail slot="start">
+                  <img src="https://source.unsplash.com/7QYd1VxLRbM">
+                </ion-thumbnail>
+                <ion-label>
+                  Jump Rope
+                  <p>โดดเชือก</p>
+                  <ion-progress-bar :value="counts['jumprope']/total"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
               <!--
               <ion-item detail router-link="/activities/swim-records">
                 <ion-thumbnail slot="start">
@@ -127,7 +137,7 @@ import {
   IonRow,
   IonCol,
   IonProgressBar,
-  IonText,
+  IonText
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
 import {mapGetters, mapState} from "vuex";
@@ -144,7 +154,7 @@ export default defineComponent({
     IonPage,
     IonList,
     IonItem,
-    IonLabel,
+    IonLabel
   },
   data () {
     return {
@@ -154,7 +164,8 @@ export default defineComponent({
         swimming: 0,
         biking: 0,
         dancing: 0,
-        sport: 0
+        sport: 0,
+        jumprope: 0,
       },
       total: 0
     }
@@ -165,13 +176,21 @@ export default defineComponent({
   },
   methods: {
     loadActivities () {
+      this.total = 0
+      this.counts.walking = 0
+      this.counts.jogging = 0
+      this.counts.swimming = 0
+      this.counts.biking = 0,
+      this.counts.dancing = 0,
+      this.counts.sport = 0,
+      this.counts.jumprope = 0,
       this.activity_records.forEach(d=>{
         this.total++
         this.counts[d.type]++
       })
     }
   },
-  mounted () {
+  updated() {
     this.loadActivities()
   }
 });
