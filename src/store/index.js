@@ -54,7 +54,10 @@ const store = createStore({
             return state.activity_records.filter(d => d.type === 'sport')
         },
         JumpRopeRecords: state => {
-            return state.activity_records.filter(d => d.type === 'jumprope')
+            return state.activity_records.filter(d => d.type === 'jump rope')
+        },
+        HulaHoopRecords: state => {
+            return state.activity_records.filter(d => d.type === 'hulahoop')
         },
     },
     mutations: {

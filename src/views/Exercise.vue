@@ -85,37 +85,17 @@
                   <ion-progress-bar :value="counts['jumprope']/total"></ion-progress-bar>
                 </ion-label>
               </ion-item>
+              <ion-item detail router-link="/activities/hulahoop-records">
+                <ion-thumbnail slot="start">
+                  <img src="https://source.unsplash.com/HC1I-tgIDq0">
+                </ion-thumbnail>
+                <ion-label>
+                  Jump Rope
+                  <p>โดดเชือก</p>
+                  <ion-progress-bar :value="counts['hulahoop']/total"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
               <!--
-              <ion-item detail router-link="/activities/swim-records">
-                <ion-thumbnail slot="start">
-                  <img src="https://source.unsplash.com/XOcM3n0QkHg">
-                </ion-thumbnail>
-                <ion-label>
-                  Swimming
-                  <p>ว่ายน้ำ</p>
-                  <ion-progress-bar :value="counts['swimming']/total"></ion-progress-bar>
-                </ion-label>
-              </ion-item>
-              <ion-item detail router-link="/activities/bike-records">
-                <ion-thumbnail slot="start">
-                  <img src="https://source.unsplash.com/K2xGNNcQn_w">
-                </ion-thumbnail>
-                <ion-label>
-                  Biking
-                  <p>ปั่นจักรยาน</p>
-                  <ion-progress-bar :value="counts['biking']/total"></ion-progress-bar>
-                </ion-label>
-              </ion-item>
-              <ion-item detail>
-                <ion-thumbnail slot="start">
-                  <img src="https://source.unsplash.com/BcVvVvqiCGA">
-                </ion-thumbnail>
-                <ion-label>
-                  Dancing
-                  <p>เต้นแอโรบิก ลีลาศ ซุมบ้า</p>
-                  <ion-progress-bar value="0"></ion-progress-bar>
-                </ion-label>
-              </ion-item>
               -->
             </ion-list>
           </ion-col>
@@ -166,6 +146,7 @@ export default defineComponent({
         dancing: 0,
         sport: 0,
         jumprope: 0,
+        hulahoop: 0
       },
       total: 0
     }
@@ -184,6 +165,7 @@ export default defineComponent({
       this.counts.dancing = 0,
       this.counts.sport = 0,
       this.counts.jumprope = 0,
+      this.counts.hulahoop = 0,
       this.activity_records.forEach(d=>{
         this.total++
         this.counts[d.type]++

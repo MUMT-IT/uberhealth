@@ -163,6 +163,21 @@ const routes = [
     component: () => import('../views/activities/JumpRopeRecordDetail')
   },
   {
+    path: '/activities/hulahoop-records',
+    name: 'HulaHoopRecord',
+    component: () => import('../views/activities/HulaHoopRecord')
+  },
+  {
+    path: '/activities/hulahoop-record-form',
+    name: 'HulaHoopRecordForm',
+    component: () => import('../views/activities/HulaHoopRecordForm')
+  },
+  {
+    path: '/activities/hulahoop-record-detail/:recordId',
+    name: 'HulaHoopRecordDetail',
+    component: () => import('../views/activities/HulaHoopRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
