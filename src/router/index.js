@@ -122,6 +122,11 @@ const routes = [
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
   },
+  {
+    path: '/health/drink',
+    name: 'Drink',
+    component: () => import('../views/health/diet/Drink')
+  },
 ]
 
 const router = createRouter({

@@ -37,6 +37,23 @@
               </ion-item-group>
               <ion-item-group>
                 <ion-item-divider>
+                  <ion-label>Diet</ion-label>
+                </ion-item-divider>
+                <ion-item inset="true" detail>
+                  <ion-icon slot="start" :icon="fastFoodOutline"></ion-icon>
+                  <ion-label>
+                    Food
+                  </ion-label>
+                </ion-item>
+                <ion-item inset="true" detail @click="$router.push({name:'Drink'})">
+                  <ion-icon slot="start" :icon="wineOutline"></ion-icon>
+                  <ion-label>
+                    Drink
+                  </ion-label>
+                </ion-item>
+              </ion-item-group>
+              <ion-item-group>
+                <ion-item-divider>
                   <ion-label>Mind</ion-label>
                 </ion-item-divider>
                 <ion-item inset="true" detail href="/tabs/home">
@@ -84,7 +101,6 @@
 </template>
 
 <script>
-import liff from '@line/liff';
 import {
   waterOutline,
   alertCircleOutline,
@@ -93,7 +109,9 @@ import {
   flagOutline,
   scaleOutline,
   manOutline,
-  happyOutline
+  happyOutline,
+    fastFoodOutline,
+    wineOutline
 } from 'ionicons/icons';
 
 import {
@@ -137,22 +155,9 @@ export default defineComponent({
       trophyOutline,
       happyOutline,
       flagOutline,
-      alertCircleOutline
-    }
-  },
-  data() {
-    return {
-      profile: {
-        'displayName': 'Likit',
-        'pictureUrl': ''
-      }
-    }
-  },
-  methods: {
-    getLineProfile: () => {
-      liff.getProfile().then(profile => {
-        this.profile = profile
-      })
+      alertCircleOutline,
+      fastFoodOutline,
+      wineOutline
     }
   },
   mounted() {
