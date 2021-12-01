@@ -178,6 +178,21 @@ const routes = [
     component: () => import('../views/activities/HulaHoopRecordDetail')
   },
   {
+    path: '/activities/bodyweight-records',
+    name: 'BodyWeightRecord',
+    component: () => import('../views/activities/BodyWeightRecord')
+  },
+  {
+    path: '/activities/bodyweight-record-form',
+    name: 'BodyWeightRecordForm',
+    component: () => import('../views/activities/BodyWeightRecordForm')
+  },
+  {
+    path: '/activities/bodyweight-record-detail/:recordId',
+    name: 'BodyWeightRecordDetail',
+    component: () => import('../views/activities/BodyWeightRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')

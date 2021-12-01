@@ -59,6 +59,9 @@ const store = createStore({
         HulaHoopRecords: state => {
             return state.activity_records.filter(d => d.type === 'hulahoop')
         },
+        BodyWeightRecords: state => {
+            return state.activity_records.filter(d => d.type === 'bodyweight')
+        },
     },
     mutations: {
         SET_USER(state, user) {
