@@ -133,6 +133,21 @@ const routes = [
     component: () => import('../views/activities/DanceRecordDetail')
   },
   {
+    path: '/activities/sport-records',
+    name: 'SportRecord',
+    component: () => import('../views/activities/SportRecord')
+  },
+  {
+    path: '/activities/sport-record-form',
+    name: 'SportRecordForm',
+    component: () => import('../views/activities/SportRecordForm')
+  },
+  {
+    path: '/activities/sport-record-detail/:recordId',
+    name: 'SportRecordDetail',
+    component: () => import('../views/activities/SportRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
