@@ -170,6 +170,7 @@ export default defineComponent({
       })
     },
     async loadDrinkWaterAll (){
+      this.drinkalldata = []
       let ref = collection(db,'drink_records')
       let q = query(ref, where("userId", "==", this.$store.state.user.userId))
       let querySnapshot = await getDocs(q)
@@ -214,6 +215,7 @@ export default defineComponent({
           this.$store.dispatch('updateDrink_Records', data)
           this.loaddrinkwaterDay()
         })
+      this.loadDrinkWaterAll()
     }
   },
   mounted() {
