@@ -25,15 +25,15 @@
             <ion-label>
               <h3>Day Nutrients</h3>
               <p>Carb</p>
-              <ion-progress-bar :value="counts.FoodCarb/this.ToTalNutrients"></ion-progress-bar>
+              <ion-progress-bar :value="FoodBarCarb"></ion-progress-bar>
             </ion-label>
             <ion-label>
               <p>Proteint</p>
-              <ion-progress-bar :value="counts.FoodProtein/this.ToTalNutrients"></ion-progress-bar>
+              <ion-progress-bar :value="FoodBarProtein"></ion-progress-bar>
             </ion-label>
             <ion-label>
               <p>Vegetable</p>
-              <ion-progress-bar :value="counts.FoodVegetable/this.ToTalNutrients"></ion-progress-bar>
+              <ion-progress-bar :value="FoodBarVegetable"></ion-progress-bar>
             </ion-label>
             <ion-lab>
               <p>Cal {{ this.counts.FoodCal }}</p>
@@ -97,14 +97,8 @@
         </ion-row>
       </ion-grid>
       <ion-button :disabled="!isFormValid" expand="block" color="success" @click="SaveData">เพิ่มรายการ</ion-button>
-      <p>
-        เนื้อสัตว์ 1 ฝ่ามือ ประมาณ 85-100 กรัม
-      </p>
-      <p>
-        ข้าว 1 ฝ่ามือ/ถ้วย ประมาณ 80 กรัม
-      </p>
       <ion-list>
-        <ion-item v-for="FoodPerDayRecord in FoodPerDay.slice(0, 5)" :key="FoodPerDayRecord.id">
+        <ion-item v-for="FoodPerDayRecord in FoodPerDay" :key="FoodPerDayRecord.id">
           <ion-label>
             <p>
               {{ FoodPerDayRecord.createdAt.toDate().toLocaleString() }}
@@ -114,6 +108,16 @@
               {{ FoodPerDayRecord.FoodCal}} Cal
               {{ FoodPerDayRecord.FoodQuantity }} ฝ่ามือ
             </h3>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <p>
+              เนื้อสัตว์ 1 ฝ่ามือ ประมาณ 85-100 กรัม
+            </p>
+            <p>
+              ข้าว 1 ฝ่ามือ/ถ้วย ประมาณ 80 กรัม
+            </p>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -141,6 +145,7 @@ import {
 import {db} from "@/firebase";
 import { collection, addDoc,Timestamp,getDocs, query, where } from '@firebase/firestore'
 import {ref} from 'vue';
+import {orderBy} from "firebase/firestore";
 export default {
   name: "FoodSearch",
   components: {
@@ -163,10 +168,10 @@ export default {
     return{
       FoodData: [],
       FoodPerDay:[],
+      FoodDateTime: new Date().toISOString(),
       FoodCarb: 0,
       FoodProtein: 0,
       FoodVegetable: 0,
-      FoodDateTime: new Date().toISOString(),
       FoodNutrientsPercent: 0,
       FoodQuantity: 0,
       FoodCal: 0,
@@ -177,17 +182,24 @@ export default {
         FoodVegetable: 0,
         FoodCal: 0
       },
+      FoodBarCarb: 0,
+      FoodBarProtein: 0,
+      FoodBarVegetable: 0,
       ToTalNutrients: 0
     }
   },
   computed:{
     isFormValid () {
       return (this.FoodNutrientsPercent === 100 && this.keywords !== '')
+      && (this.FoodQuantity != '' || this.FoodQuantity != 0)
     }
   },
   watch:{
     keywords: async function () {
       await this.LoadFoodData()
+    },
+    FoodDateTime: async  function(){
+      await this.LoadFoodPereDay()
     }
   },
   methods:{
@@ -227,27 +239,26 @@ export default {
         createdAt: Timestamp.fromDate(new Date()),
         datetxt: this.DateN
       }
-      console.log("FoodCal" & this.FoodCal)
       let ref = collection(db, 'Food')
       let q = query(ref, where("FoodName", "==", this.keywords))
       let querySnapshot = await getDocs(q)
-
       if (querySnapshot.empty){
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
         })
       }
       if (this.isFormValid) {
-        const ref = collection(db, 'FoodUser')
+        let ref = collection(db, 'FoodUser')
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
         })
       }
-      this.LoadFoodPereDay()
+      await  this.LoadFoodPereDay()
     },
     async LoadFoodPereDay(){
-      let ref = collection(db, 'Food')
-      let q = query(ref, where("userId", "==", this.$store.state.user.userId), where("datetxt", "==",this.DateN ))
+      let ref = collection(db, 'FoodUser')
+      let q = query(ref, where("userId", "==", this.$store.state.user.userId), where('datetxt', '==',this.DateN ),
+          orderBy('createdAt','desc'))
       let querySnapshot = await getDocs(q)
       this.counts.FoodCal = 0
       this.counts.FoodCarb += 0
@@ -259,14 +270,17 @@ export default {
         let data = d.data()
         data.id = d.id
         this.FoodPerDay.push(data)
-        this.counts.FoodCal += parseInt(data.FoodCal)
-        this.counts.FoodCarb += parseInt(data.FoodCarb)
-        this.counts.FoodProtein += parseInt(data.FoodProtein)
-        this.counts.FoodVegetable += parseInt(data.FoodVegetable)
-        this.ToTalNutrients += parseInt(data.FoodCarb)
-        this.ToTalNutrients += parseInt(data.FoodProtein)
-        this.ToTalNutrients += parseInt(data.FoodVegetable)
+        this.counts.FoodCal += parseInt(data.FoodCal) * parseInt(data.FoodQuantity)
+        this.counts.FoodCarb += parseInt(data.FoodCarb)* parseInt(data.FoodQuantity)
+        this.counts.FoodProtein += parseInt(data.FoodProtein)* parseInt(data.FoodQuantity)
+        this.counts.FoodVegetable += parseInt(data.FoodVegetable)* parseInt(data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodCarb)* parseInt(data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodProtein)* parseInt(data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodVegetable)* parseInt(data.FoodQuantity)
       })
+      if(this.counts.FoodCarb != 0){this.FoodBarCarb = this.counts.FoodCarb / this.ToTalNutrients}
+      if(this.counts.FoodProtein != 0){this.FoodBarProtein = this.counts.FoodProtein / this.ToTalNutrients}
+      if(this.counts.FoodVegetable != 0){this.FoodBarVegetable = this.counts.FoodVegetable / this.ToTalNutrients}
     },
   },
   setup(){
