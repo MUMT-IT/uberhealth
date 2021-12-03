@@ -57,19 +57,34 @@
       </ion-grid>
       <ion-grid>
         <ion-row>
-          <ion-label>Carb: {{ FoodCarb }} %</ion-label>
+          <ion-col size="8">
+            <ion-label>Carb:(ข้าว/แป้ง/เส้น)</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label>{{ FoodCarb }} %</ion-label>
+          </ion-col>
         </ion-row>
         <ion-row>
           <ion-range  min="0" max="100" v-model="FoodCarb" step="5" ticks="true" snaps="true" color="warning"></ion-range>
         </ion-row>
         <ion-row>
-          <ion-label>Protein: {{ FoodProtein }} %</ion-label>
+          <ion-col size="8">
+            <ion-label>Protein:(เนื้อสัตว์/ถั่ว/เห็ด)</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label>{{ FoodProtein }} %</ion-label>
+          </ion-col>
         </ion-row>
         <ion-row>
           <ion-range  min="0" max="100" v-model="FoodProtein" step="5" ticks="true" snaps="true" color="secondary"></ion-range>
         </ion-row>
         <ion-row>
-          <ion-label>Vegetable: {{ FoodVegetable }} %</ion-label>
+          <ion-col size="8">
+            <ion-label>Vegetable:(ผัก)</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label>{{ FoodVegetable }} %</ion-label>
+          </ion-col>
         </ion-row>
         <ion-row>
           <ion-range  min="0" max="100" v-model="FoodVegetable" step="5" ticks="true" snaps="true" color="success"></ion-range>
@@ -270,17 +285,19 @@ export default {
         let data = d.data()
         data.id = d.id
         this.FoodPerDay.push(data)
-        this.counts.FoodCal += parseInt(data.FoodCal) * parseInt(data.FoodQuantity)
-        this.counts.FoodCarb += parseInt(data.FoodCarb)* parseInt(data.FoodQuantity)
-        this.counts.FoodProtein += parseInt(data.FoodProtein)* parseInt(data.FoodQuantity)
-        this.counts.FoodVegetable += parseInt(data.FoodVegetable)* parseInt(data.FoodQuantity)
-        this.ToTalNutrients += parseInt(data.FoodCarb)* parseInt(data.FoodQuantity)
-        this.ToTalNutrients += parseInt(data.FoodProtein)* parseInt(data.FoodQuantity)
-        this.ToTalNutrients += parseInt(data.FoodVegetable)* parseInt(data.FoodQuantity)
+        this.counts.FoodCal += parseInt(data.FoodCal) * (data.FoodQuantity)
+        this.counts.FoodCarb += parseInt(data.FoodCarb)* (data.FoodQuantity)
+        console.log(data.FoodCarb)
+        this.counts.FoodProtein += parseInt(data.FoodProtein)* (data.FoodQuantity)
+        this.counts.FoodVegetable += parseInt(data.FoodVegetable)* (data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodCarb)* (data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodProtein)* (data.FoodQuantity)
+        this.ToTalNutrients += parseInt(data.FoodVegetable)* (data.FoodQuantity)
       })
       if(this.counts.FoodCarb != 0){this.FoodBarCarb = this.counts.FoodCarb / this.ToTalNutrients}
       if(this.counts.FoodProtein != 0){this.FoodBarProtein = this.counts.FoodProtein / this.ToTalNutrients}
       if(this.counts.FoodVegetable != 0){this.FoodBarVegetable = this.counts.FoodVegetable / this.ToTalNutrients}
+
     },
   },
   setup(){
