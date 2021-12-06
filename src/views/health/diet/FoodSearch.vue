@@ -28,7 +28,7 @@
               <ion-progress-bar :value="FoodBarCarb"></ion-progress-bar>
             </ion-label>
             <ion-label>
-              <p>Proteint</p>
+              <p>Protein</p>
               <ion-progress-bar :value="FoodBarProtein"></ion-progress-bar>
             </ion-label>
             <ion-label>

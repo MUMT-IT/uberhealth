@@ -28,6 +28,7 @@ const routes = [
       },
       {
         path: 'ranking',
+        name: 'Ranking',
         component: () => import('../views/Ranking')
       },
       {
@@ -211,6 +212,11 @@ const routes = [
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
+  },
+  {
+    path: '/ranking-challenge/:recordId',
+    name: 'RankingChallenge',
+    component: () => import('../views/ranking/RankingChallenge')
   },
   {
     path: '/health/drink',

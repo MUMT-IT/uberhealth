@@ -11,7 +11,7 @@
           <ion-icon :icon="bicycle"></ion-icon>
           <ion-label>Exercise</ion-label>
         </ion-tab-button>
-        <ion-tab-button tab="ranking" href="/tabs/soon">
+        <ion-tab-button tab="ranking" href="/tabs/ranking">
           <ion-icon :icon="barChart"></ion-icon>
           <ion-label>Ranking</ion-label>
         </ion-tab-button>
