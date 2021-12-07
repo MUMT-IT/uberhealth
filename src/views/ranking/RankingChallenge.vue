@@ -4,29 +4,81 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-text class="ion-text-lg-center">
-              <h1>Ranking</h1>
-              <p>ชื่อ Challenge</p>
+            <ion-text>
+              <div class="ion-text-center">
+                <h1>Ranking</h1>
+                <p>{{ challengeTitle }}</p>
+              </div>
             </ion-text>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-item v-for="(vaule,name) in groupNameStep" :key="name.id">
-              <ion-col>
-                <ion-label>{{ name }}</ion-label>
-              </ion-col>
-              <ion-col>
-                <ion-label class="ion-text-right">{{ vaule }}</ion-label>
-              </ion-col>
-            </ion-item>
+            <ion-list>
+              <ion-list-header>
+                <h4>You</h4>
+              </ion-list-header>
+              <ion-item v-for="(ustep,index) in usteps.slice(CaculateUpindex,pointIndex+2)" :key="ustep.id">
+                <ion-col>
+                  <ion-label>
+                    {{ index+1 }}
+                  </ion-label>
+                </ion-col>
+                <ion-col size="7">
+                  <ion-label>{{ ustep.name }}
+                    <p>
+                      {{ ustep.group }}
+                    </p>
+                  </ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label class="ion-text-right">{{ ustep.steps }}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label class="ion-text-right">Steps</ion-label>
+                </ion-col>
+              </ion-item>
+            </ion-list>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item v-for="ustep in usteps" :key="ustep.id">
+            <ion-list-header>
+              <h4>Rank Groups</h4>
+            </ion-list-header>
+            <ion-item v-for="(gstep,index) in gsteps" :key="gstep.id">
+              <ion-col>
+                <ion-label>
+                  {{ index+1 }}
+                </ion-label>
+              </ion-col>
+              <ion-col size="7">
+                <ion-label>{{ gstep.group }}</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-label class="ion-text-right">{{ gstep.steps }}</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-label class="ion-text-right">Steps</ion-label>
+              </ion-col>
+            </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-list>
+              <ion-list-header>
+                <h4>Rank Top 10</h4>
+              </ion-list-header>
+              <ion-item v-for="(ustep,index) in usteps.slice(0,10)" :key="ustep.id">
                 <ion-col>
+                  <ion-label>
+                    {{ index+1 }}
+                  </ion-label>
+                </ion-col>
+                <ion-col size="7">
                   <ion-label>{{ ustep.name }}
                   <p>
                     {{ ustep.group }}
@@ -37,13 +89,20 @@
                   <ion-label class="ion-text-right">{{ ustep.steps }}</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label class="ion-text-right">ก้าว</ion-label>
+                  <ion-label class="ion-text-right">Steps</ion-label>
                 </ion-col>
               </ion-item>
             </ion-list>
           </ion-col>
         </ion-row>
+        <ion-row>
+        </ion-row>
       </ion-grid>
+      <ion-fab vertical="top" horizontal="start" slot="fixed">
+        <ion-fab-button @click="$router.push({ name: 'Health' })">
+          <ion-icon :icon="arrowBackCircle"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
@@ -57,12 +116,17 @@ import {
   IonCol,
   IonText,
   IonList,
-  IonLabel
+  IonLabel,
+  IonListHeader,
+  IonFabButton,
+  IonFab,
+  IonIcon
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
+import { arrowBackCircle } from 'ionicons/icons'
 import {mapState} from "vuex";
-import { db } from '@/firebase'
-import { doc } from '@firebase/firestore'
+import { db } from '@/firebase';
+import { doc } from '@firebase/firestore';
 import {getDoc,collection,where,getDocs,query} from "firebase/firestore";
 export default defineComponent({
   name: "RankingChallenge",
@@ -74,27 +138,57 @@ export default defineComponent({
     IonContent,
     IonPage,
     IonList,
-    IonLabel
+    IonLabel,
+    IonListHeader,
+    IonFabButton,
+    IonFab,
+    IonIcon
+  },
+  setup () {
+    return {
+      arrowBackCircle,
+    }
   },
   data(){
     return{
+      upIndex: 0,
+      pointIndex: 0,
+      downIndex:0,
       usteps:[],
+      gsteps:[],
       challengeId: '',
       userGroupsId: null,
       userMembers: {},
       userStep: {},
-      groupNameStep: {}
+      groupNameStep: {},
+      challengeTitle: '',
     }
   },
   computed: {
     ...mapState(['user','profile','challenges']),
+    CaculateUpindex(){
+      let upindex = 0
+      if(this.pointIndex != 0){
+        upindex = this.pointIndex
+        upindex = upindex  -1
+      }
+      return upindex
+    },
   },
   watch:{
     challengeId: async function() {
+      this.ResetData()
       await this.LoadGroupsSteps()
+
     }
   },
   methods:{
+    ResetData(){
+      this.userStep = {}
+      this.groupNameStep = {}
+      this.usteps = []
+      this.gsteps =[]
+    },
     async LoadGroupsSteps(){
       let docRef = await doc(db, 'challenges', this.challengeId)
       getDoc(docRef).then((snapshot) => {
@@ -102,6 +196,7 @@ export default defineComponent({
           let data = snapshot.data()
           data.id = snapshot.id
           this.userGroupsId = data.groups
+          this.challengeTitle = data.title
           this.LoaduserGroups(this.userGroupsId)
         }
       })
@@ -152,25 +247,30 @@ export default defineComponent({
         'user Step'
         if(this.userStep[uId] === undefined){
           this.userStep[uId] = parseInt(usteps)
-
           this.usteps.push({
             uid: uId,
             name: userName,
             steps: usteps,
             group: groupName
           })
-
         }else{
           this.userStep[uId] += parseInt(usteps)
-          this.usteps.find(usteps => usteps.uid === uId).steps = this.userStep[uId]
+          this.usteps.find(usteps => usteps.uid === uId).steps = parseInt(this.userStep[uId])
         }
-        this.usteps.sort((a,b)=> b.steps-a.steps)
         'GroupName Step'
         if(this.groupNameStep[groupName] === undefined){
           this.groupNameStep[groupName] = parseInt(usteps)
+          this.gsteps.push({
+            group: groupName,
+            steps: usteps,
+          })
         }else{
           this.groupNameStep[groupName] += parseInt(usteps)
+          this.gsteps.find(gsteps => gsteps.group === groupName).steps = parseInt(this.groupNameStep[groupName])
         }
+        this.usteps.sort((a,b)=> b.steps-a.steps)
+        this.gsteps.sort((a,b)=> b.steps-a.steps)
+        this.pointIndex = this.usteps.findIndex(usteps => usteps.uid === this.$store.state.user.userId)
       }
     },
   },
