@@ -11,12 +11,37 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-list>
-            {{ userStep }}
-          </ion-list>
+          <ion-col>
+            <ion-item v-for="(vaule,name) in groupNameStep" :key="name.id">
+              <ion-col>
+                <ion-label>{{ name }}</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-label class="ion-text-right">{{ vaule }}</ion-label>
+              </ion-col>
+            </ion-item>
+          </ion-col>
         </ion-row>
         <ion-row>
-          {{ groupNameStep }}
+          <ion-col>
+            <ion-list>
+              <ion-item v-for="ustep in usteps" :key="ustep.id">
+                <ion-col>
+                  <ion-label>{{ ustep.name }}
+                  <p>
+                    {{ ustep.group }}
+                  </p>
+                  </ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label class="ion-text-right">{{ ustep.steps }}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label class="ion-text-right">ก้าว</ion-label>
+                </ion-col>
+              </ion-item>
+            </ion-list>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -31,7 +56,8 @@ import {
   IonRow,
   IonCol,
   IonText,
-  IonList
+  IonList,
+  IonLabel
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
 import {mapState} from "vuex";
@@ -47,18 +73,12 @@ export default defineComponent({
     IonCol,
     IonContent,
     IonPage,
-    IonList
+    IonList,
+    IonLabel
   },
   data(){
     return{
-      userSteps:{
-        userId:'',
-        steps: 0,
-      },
-      groupsSteps:{
-        groupsId:'',
-        steps: 0,
-      },
+      usteps:[],
       challengeId: '',
       userGroupsId: null,
       userMembers: {},
@@ -67,7 +87,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['user','profile','challenges'])
+    ...mapState(['user','profile','challenges']),
   },
   watch:{
     challengeId: async function() {
@@ -108,31 +128,51 @@ export default defineComponent({
           data.id = d.id
           this.Loadactivity_records(data.recordId,usermembesrs.members[i],usermembesrs.name)
         })
-
       }
-      console.log(this.groupNameStep)
     },
     async Loadactivity_records(recordId,uId,groupName){
+      let usteps = null
       let docRef =  doc(db, 'activity_records', recordId)
       await getDoc(docRef).then((snapshot) => {
         if (snapshot.exists()) {
           let data = snapshot.data()
           data.id = snapshot.id
-          'user Step'
-          if(this.userStep[uId] === undefined){
-            this.userStep[uId] = parseInt(data.steps)
-          }else{
-            this.userStep[uId] += parseInt(data.steps)
-          }
-          'GroupName Step'
-          if(this.groupNameStep[groupName] === undefined){
-            this.groupNameStep[groupName] = parseInt(data.steps)
-          }else{
-            this.groupNameStep[groupName] += parseInt(data.steps)
-          }
+          usteps = data.steps
         }
       })
-    }
+
+      let ref = collection(db, 'users')
+      let q = query(ref, where("userId", "==", uId))
+      let querySnapshot = await getDocs(q)
+      if (querySnapshot.docs.length!==0){
+        let docSnapshot = querySnapshot.docs[0]
+        let data = docSnapshot.data()
+        let userName =  data.displayName
+
+        'user Step'
+        if(this.userStep[uId] === undefined){
+          this.userStep[uId] = parseInt(usteps)
+
+          this.usteps.push({
+            uid: uId,
+            name: userName,
+            steps: usteps,
+            group: groupName
+          })
+
+        }else{
+          this.userStep[uId] += parseInt(usteps)
+          this.usteps.find(usteps => usteps.uid === uId).steps = this.userStep[uId]
+        }
+        this.usteps.sort((a,b)=> b.steps-a.steps)
+        'GroupName Step'
+        if(this.groupNameStep[groupName] === undefined){
+          this.groupNameStep[groupName] = parseInt(usteps)
+        }else{
+          this.groupNameStep[groupName] += parseInt(usteps)
+        }
+      }
+    },
   },
   updated() {
     this.challengeId = this.$route.params.recordId
