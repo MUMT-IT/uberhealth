@@ -13,6 +13,9 @@
           </ion-col>
         </ion-row>
         <ion-row>
+          <ion-button color="success" @click="ReLoad">Load Ranking</ion-button>
+        </ion-row>
+        <ion-row>
           <ion-col>
             <ion-list>
               <ion-list-header>
@@ -32,10 +35,10 @@
                   </ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label class="ion-text-right">{{ ustep.steps }}</ion-label>
+                  <ion-badge color="warning">{{ ustep.steps }}</ion-badge>
                 </ion-col>
                 <ion-col>
-                  <ion-label class="ion-text-right">Steps</ion-label>
+                  <ion-label class="ion-text-right">steps</ion-label>
                 </ion-col>
               </ion-item>
             </ion-list>
@@ -57,10 +60,10 @@
                 <ion-label>{{ gstep.group }}</ion-label>
               </ion-col>
               <ion-col>
-                <ion-label class="ion-text-right">{{ gstep.steps }}</ion-label>
+                <ion-badge color="success">{{ gstep.steps }}</ion-badge>
               </ion-col>
               <ion-col>
-                <ion-label class="ion-text-right">Steps</ion-label>
+                <ion-label class="ion-text-right">steps</ion-label>
               </ion-col>
             </ion-item>
             </ion-list>
@@ -86,10 +89,10 @@
                   </ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label class="ion-text-right">{{ ustep.steps }}</ion-label>
+                  <ion-badge color="danger">{{ ustep.steps }}</ion-badge>
                 </ion-col>
                 <ion-col>
-                  <ion-label class="ion-text-right">Steps</ion-label>
+                  <ion-label class="ion-text-right">steps</ion-label>
                 </ion-col>
               </ion-item>
             </ion-list>
@@ -99,7 +102,7 @@
         </ion-row>
       </ion-grid>
       <ion-fab vertical="top" horizontal="start" slot="fixed">
-        <ion-fab-button @click="$router.push({ name: 'Health' })">
+        <ion-fab-button @click="$router.push({ name: 'Ranking' })">
           <ion-icon :icon="arrowBackCircle"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -120,7 +123,10 @@ import {
   IonListHeader,
   IonFabButton,
   IonFab,
-  IonIcon
+  IonIcon,
+  IonButton,
+  loadingController,
+  IonBadge
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
 import { arrowBackCircle } from 'ionicons/icons'
@@ -129,6 +135,9 @@ import { db } from '@/firebase';
 import { doc } from '@firebase/firestore';
 import {getDoc,collection,where,getDocs,query} from "firebase/firestore";
 export default defineComponent({
+  props: {
+    timeout: { type: Number, default: 7000 },
+  },
   name: "RankingChallenge",
   components: {
     IonText,
@@ -142,7 +151,9 @@ export default defineComponent({
     IonListHeader,
     IonFabButton,
     IonFab,
-    IonIcon
+    IonIcon,
+    IonButton,
+    IonBadge
   },
   setup () {
     return {
@@ -177,12 +188,29 @@ export default defineComponent({
   },
   watch:{
     challengeId: async function() {
+      this.presentLoading()
       this.ResetData()
       await this.LoadGroupsSteps()
-
     }
   },
   methods:{
+    async presentLoading() {
+      const loading = await loadingController
+          .create({
+            cssClass: 'my-custom-class',
+            message: 'Please wait...',
+            duration: this.timeout,
+          });
+      await loading.present();
+      setTimeout(function() {
+        loading.dismiss()
+      }, this.timeout);
+    },
+    ReLoad(){
+      this.presentLoading()
+      this.ResetData()
+      this.LoadGroupsSteps()
+    },
     ResetData(){
       this.userStep = {}
       this.groupNameStep = {}
@@ -277,7 +305,7 @@ export default defineComponent({
       }
     },
   },
-  updated() {
+  mounted() {
     this.challengeId = this.$route.params.recordId
   },
 });
