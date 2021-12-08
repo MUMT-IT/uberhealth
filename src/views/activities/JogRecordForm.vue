@@ -30,6 +30,10 @@
                 <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
               </ion-item>
               <ion-item>
+                <ion-label position="floating">Steps</ion-label>
+                <ion-input type="number" min="1" step="1" v-model="steps" placeholder="จำนวนก้าวโดยประมาณ"></ion-input>
+              </ion-item>
+              <ion-item>
                 <ion-label position="floating">Distance (km)</ion-label>
                 <ion-input type="number" min="0.1" step="0.1" v-model="distance" placeholder="ระยะทางหน่วยกิโลเมตร"></ion-input>
               </ion-item>

@@ -21,7 +21,7 @@
               <ion-item v-for="(ustep,index) in usteps.slice(CaculateUpindex,pointIndex+2)" :key="ustep.id">
                 <ion-col>
                   <ion-label>
-                    {{ index+1 }}
+                    {{ pointIndex + index }}
                   </ion-label>
                 </ion-col>
                 <ion-col size="7">
@@ -271,6 +271,9 @@ export default defineComponent({
         this.usteps.sort((a,b)=> b.steps-a.steps)
         this.gsteps.sort((a,b)=> b.steps-a.steps)
         this.pointIndex = this.usteps.findIndex(usteps => usteps.uid === this.$store.state.user.userId)
+        if(this.pointIndex == 0 ){
+          this.pointIndex = 1
+        }
       }
     },
   },
