@@ -151,7 +151,8 @@ export default defineComponent({
         distances: null,
         estimatedCalories: null,
         calories: null,
-        steps: null
+        steps: null,
+        min: null,
       },
       challenges: [],
       submissions: [],
@@ -168,7 +169,7 @@ export default defineComponent({
     submissableChallenges () {
       return this.challenges.filter(ch => this.submissions.indexOf(ch.id) < 0)
     },
-    ...mapState(['user', 'profile'])
+    ...mapState(['user', 'profile','userGroup'])
   },
   watch: {
     'route.params.recordId': async function() {
@@ -198,6 +199,7 @@ export default defineComponent({
         if (docSnapshot.exists()) {
           this.record = docSnapshot.data()
           this.record.id = docSnapshot.id
+          console.log(this.record)
         }
       }
     }
@@ -225,7 +227,15 @@ export default defineComponent({
           recordId: this.route.params.recordId,
           userId: this.user.userId,
           challengeId: ch,
-          submittedAt: new Date()
+          submittedAt: new Date(),
+          type: this.record.type,
+          steps: this.record.steps,
+          calories: this.record.calories,
+          estimatedCalories: this.record.estimatedCalories,
+          min: this.record.min,
+          exerType: this.record.exerType,
+          userGroupId: this.userGroup.id,
+          distance: this.record.distance,
         }).then(async () => {
           await this.presentSubmit()
           this.submissions.push(ch)

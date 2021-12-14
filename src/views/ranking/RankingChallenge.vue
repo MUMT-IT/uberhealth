@@ -28,9 +28,9 @@
                   </ion-label>
                 </ion-col>
                 <ion-col size="7">
-                  <ion-label>{{ ustep.name }}
+                  <ion-label>{{ ustep.username }}
                     <p>
-                      {{ ustep.group }}
+                      {{ ustep.groupname }}
                     </p>
                   </ion-label>
                 </ion-col>
@@ -57,7 +57,11 @@
                 </ion-label>
               </ion-col>
               <ion-col size="7">
-                <ion-label>{{ gstep.group }}</ion-label>
+                <ion-label>{{ gstep.groupname }}
+                <p>
+                  {{ gstep.countPerson }} คน
+                </p>
+                </ion-label>
               </ion-col>
               <ion-col>
                 <ion-badge color="success">{{ gstep.steps }}</ion-badge>
@@ -82,9 +86,9 @@
                   </ion-label>
                 </ion-col>
                 <ion-col size="7">
-                  <ion-label>{{ ustep.name }}
+                  <ion-label>{{ ustep.username }}
                   <p>
-                    {{ ustep.group }}
+                    {{ ustep.groupname }}
                   </p>
                   </ion-label>
                 </ion-col>
@@ -125,15 +129,14 @@ import {
   IonFab,
   IonIcon,
   IonButton,
-  loadingController,
   IonBadge
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
 import { arrowBackCircle } from 'ionicons/icons'
 import {mapState} from "vuex";
 import { db } from '@/firebase';
-import { doc } from '@firebase/firestore';
-import {getDoc,collection,where,getDocs,query} from "firebase/firestore";
+//import { doc } from '@firebase/firestore';
+import {getDoc,doc,collection,where,getDocs,query} from "firebase/firestore";
 export default defineComponent({
   props: {
     timeout: { type: Number, default: 7000 },
@@ -172,11 +175,12 @@ export default defineComponent({
       userMembers: {},
       userStep: {},
       groupNameStep: {},
+      countPerson: {},
       challengeTitle: '',
     }
   },
   computed: {
-    ...mapState(['user','profile','challenges']),
+    ...mapState(['user','profile','challenges','userGroup']),
     CaculateUpindex(){
       let upindex = 0
       if(this.pointIndex != 0){
@@ -188,119 +192,203 @@ export default defineComponent({
   },
   watch:{
     challengeId: async function() {
-      this.presentLoading()
-      this.ResetData()
-      await this.LoadGroupsSteps()
+      await this.ResetData()
+      await this.Loadactivity_submission()
     }
   },
   methods:{
-    async presentLoading() {
-      const loading = await loadingController
-          .create({
-            cssClass: 'my-custom-class',
-            message: 'Please wait...',
-            duration: this.timeout,
-          });
-      await loading.present();
-      setTimeout(function() {
-        loading.dismiss()
-      }, this.timeout);
-    },
     ReLoad(){
-      this.presentLoading()
       this.ResetData()
-      this.LoadGroupsSteps()
+      this.Loadactivity_submission()
     },
     ResetData(){
       this.userStep = {}
       this.groupNameStep = {}
+      this.countPerson = {}
       this.usteps = []
       this.gsteps =[]
     },
-    async LoadGroupsSteps(){
-      let docRef = await doc(db, 'challenges', this.challengeId)
-      getDoc(docRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          let data = snapshot.data()
-          data.id = snapshot.id
-          this.userGroupsId = data.groups
-          this.challengeTitle = data.title
-          this.LoaduserGroups(this.userGroupsId)
-        }
-      })
-      },
-    async LoaduserGroups(userGroupsId){
-      for (let i = 0; i < userGroupsId.length; i++) {
-        let docRef = await doc(db, 'userGroups',userGroupsId[i])
-        getDoc(docRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            let data = snapshot.data()
-            data.id = snapshot.id
-            this.Loadactivity_submission(data)
-          }
-        })
-      }
-    },
-    async Loadactivity_submission(usermembesrs){
-      for (let i = 0; i < usermembesrs.members.length; i++) {
+    async Loadactivity_submission(){
         let ref = collection(db, 'activity_submission')
-        let q = query(ref, where("userId", "==", usermembesrs.members[i]), where('challengeId', '==',this.challengeId ))
+        let q = query(ref, where('challengeId', '==',this.challengeId ))
         let querySnapshot = await getDocs(q)
         querySnapshot.forEach(d => {
-          let data = d.data()
+          let  data = d.data()
           data.id = d.id
-          this.Loadactivity_records(data.recordId,usermembesrs.members[i],usermembesrs.name)
+          if(data.steps > 0 ){
+            'GroupName Step'
+            if(this.groupNameStep[data.userGroupId] === undefined){
+              this.groupNameStep[data.userGroupId] = parseInt(data.steps)
+              this.gsteps.push({
+                groupid: data.userGroupId,
+                steps: data.steps,
+                groupname: null,
+                countPerson: 0,
+              })
+            }else{
+              this.groupNameStep[data.userGroupId] += parseInt(data.steps)
+              this.gsteps.find(gsteps => gsteps.groupid === data.userGroupId).steps = parseInt(this.groupNameStep[data.userGroupId])
+            }
+
+            'user Step'
+            if(this.userStep[data.userId] === undefined){
+              if(this.countPerson[data.userGroupId] === undefined){
+                this.countPerson[data.userGroupId] = 1
+              }else{
+                this.countPerson[data.userGroupId] += 1
+              }
+              this.gsteps.find(gsteps => gsteps.groupid === data.userGroupId).countPerson = parseInt(this.countPerson[data.userGroupId])
+              this.userStep[data.userId] = parseInt(data.steps)
+              this.usteps.push({
+                uid: data.userId,
+                steps: this.userStep[data.userId],
+                groupid: data.userGroupId,
+                groupname: '',
+                username: ''
+              })
+            }else{
+              this.userStep[data.userId] += parseInt(data.steps)
+              this.usteps.find(usteps => usteps.uid === data.userId).steps = parseInt(this.userStep[data.userId])
+            }
+          }
         })
-      }
-    },
-    async Loadactivity_records(recordId,uId,groupName){
-      let usteps = null
-      let docRef =  doc(db, 'activity_records', recordId)
-      await getDoc(docRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          let data = snapshot.data()
-          data.id = snapshot.id
-          usteps = data.steps
+      console.log(this.countPerson)
+      this.usteps.sort((a,b)=> b.steps-a.steps)
+      this.gsteps.sort((a,b)=> b.steps-a.steps)
+      if(this.usteps.length != 0 ){
+        'Show 10 Rank UserName'
+        for (let i = 0; i < 9; i++) {
+          if(i <= this.usteps.length -1){
+            let ref = collection(db, 'users')
+            let q = query(ref, where("userId", "==", this.usteps[i].uid))
+            let querySnapshot = await getDocs(q)
+            if (querySnapshot.docs.length!==0){
+              let docSnapshot = querySnapshot.docs[0]
+              let data = docSnapshot.data()
+              this.usteps.find(usteps => usteps.uid === this.usteps[i].uid).username =  data.displayName
+            }
+            let docRef =  doc(db, 'userGroups', this.usteps[i].groupid)
+            await getDoc(docRef).then((snapshot) => {
+              if (snapshot.exists()) {
+                let data = snapshot.data()
+                data.id = snapshot.id
+                this.usteps.find(usteps => usteps.uid === this.usteps[i].uid).groupname =  data.name
+              }
+            })
+          }
         }
-      })
-
-      let ref = collection(db, 'users')
-      let q = query(ref, where("userId", "==", uId))
-      let querySnapshot = await getDocs(q)
-      if (querySnapshot.docs.length!==0){
-        let docSnapshot = querySnapshot.docs[0]
-        let data = docSnapshot.data()
-        let userName =  data.displayName
-
-        'user Step'
-        if(this.userStep[uId] === undefined){
-          this.userStep[uId] = parseInt(usteps)
-          this.usteps.push({
-            uid: uId,
-            name: userName,
-            steps: usteps,
-            group: groupName
-          })
-        }else{
-          this.userStep[uId] += parseInt(usteps)
-          this.usteps.find(usteps => usteps.uid === uId).steps = parseInt(this.userStep[uId])
-        }
-        'GroupName Step'
-        if(this.groupNameStep[groupName] === undefined){
-          this.groupNameStep[groupName] = parseInt(usteps)
-          this.gsteps.push({
-            group: groupName,
-            steps: usteps,
-          })
-        }else{
-          this.groupNameStep[groupName] += parseInt(usteps)
-          this.gsteps.find(gsteps => gsteps.group === groupName).steps = parseInt(this.groupNameStep[groupName])
-        }
-        this.usteps.sort((a,b)=> b.steps-a.steps)
-        this.gsteps.sort((a,b)=> b.steps-a.steps)
+        'Show UserName'
         this.pointIndex = this.usteps.findIndex(usteps => usteps.uid === this.$store.state.user.userId)
         if(this.pointIndex == 0 ){
+          if(this.usteps[this.pointIndex].username == ''){
+            let ref = collection(db, 'users')
+            let q = query(ref, where("userId", "==", this.usteps[this.pointIndex].uid))
+            let querySnapshot = await getDocs(q)
+            if (querySnapshot.docs.length!==0){
+              let docSnapshot = querySnapshot.docs[0]
+              let data = docSnapshot.data()
+              this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex].uid).username =  data.displayName
+            }
+            let docRef =  doc(db, 'userGroups', this.usteps[this.pointIndex].groupid)
+            await getDoc(docRef).then((snapshot) => {
+              if (snapshot.exists()) {
+                let data = snapshot.data()
+                data.id = snapshot.id
+                this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex].uid).groupname =  data.name
+              }
+            })
+          }
+          if(this.usteps.length > 1){
+            if(this.usteps[this.pointIndex +1 ].username == ''){
+              let ref = collection(db, 'users')
+              let q = query(ref, where("userId", "==", this.usteps[this.pointIndex +1].uid))
+              let querySnapshot = await getDocs(q)
+              if (querySnapshot.docs.length!==0){
+                let docSnapshot = querySnapshot.docs[0]
+                let data = docSnapshot.data()
+                this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex + 1 ].uid).username =  data.displayName
+              }
+              let docRef =  doc(db, 'userGroups', this.usteps[this.pointIndex +1].groupid)
+              await getDoc(docRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                  let data = snapshot.data()
+                  data.id = snapshot.id
+                  this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex +1].uid).groupname =  data.name
+                }
+              })
+            }
+          }
           this.pointIndex = 1
+        }else{
+          if(this.usteps[this.pointIndex].username == ''){
+            let ref = collection(db, 'users')
+            let q = query(ref, where("userId", "==", this.usteps[this.pointIndex].uid))
+            let querySnapshot = await getDocs(q)
+            if (querySnapshot.docs.length!==0){
+              let docSnapshot = querySnapshot.docs[0]
+              let data = docSnapshot.data()
+              this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex].uid).username =  data.displayName
+            }
+            let docRef =  doc(db, 'userGroups', this.usteps[this.pointIndex].groupid)
+            await getDoc(docRef).then((snapshot) => {
+              if (snapshot.exists()) {
+                let data = snapshot.data()
+                data.id = snapshot.id
+                this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex].uid).groupname =  data.name
+              }
+            })
+          }
+          if(this.pointIndex - 1 >= 0){
+            if(this.usteps[this.pointIndex -1].username == ''){
+              let ref = collection(db, 'users')
+              let q = query(ref, where("userId", "==", this.usteps[this.pointIndex -1].uid))
+              let querySnapshot = await getDocs(q)
+              if (querySnapshot.docs.length!==0){
+                let docSnapshot = querySnapshot.docs[0]
+                let data = docSnapshot.data()
+                this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex -1].uid).username =  data.displayName
+              }
+              let docRef =  doc(db, 'userGroups', this.usteps[this.pointIndex-1].groupid)
+              await getDoc(docRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                  let data = snapshot.data()
+                  data.id = snapshot.id
+                  this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex-1].uid).groupname =  data.name
+                }
+              })
+          }
+        }
+          if(this.pointIndex + 1 != this.usteps.length){
+            if(this.usteps[this.pointIndex -1].username == null){
+              let ref = collection(db, 'users')
+              let q = query(ref, where("userId", "==", this.usteps[this.pointIndex +1].uid))
+              let querySnapshot = await getDocs(q)
+              if (querySnapshot.docs.length!==0){
+                let docSnapshot = querySnapshot.docs[0]
+                let data = docSnapshot.data()
+                this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex +1].uid).username =  data.displayName
+              }
+              let docRef =  doc(db, 'userGroups', this.usteps[this.pointIndex +1].groupid)
+              await getDoc(docRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                  let data = snapshot.data()
+                  data.id = snapshot.id
+                  this.usteps.find(usteps => usteps.uid === this.usteps[this.pointIndex+1].uid).groupname =  data.name
+                }
+              })
+            }
+          }
+        }
+        'Show GroupName'
+        for (let i = 0; i < this.gsteps.length; i++) {
+          let docRef =  doc(db, 'userGroups', this.gsteps[i].groupid)
+          await getDoc(docRef).then((snapshot) => {
+            if (snapshot.exists()) {
+              let data = snapshot.data()
+              data.id = snapshot.id
+              this.gsteps.find(gsteps => gsteps.groupid === this.gsteps[i].groupid).groupname =  data.name
+            }
+          })
         }
       }
     },

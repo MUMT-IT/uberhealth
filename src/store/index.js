@@ -18,6 +18,7 @@ const store = createStore({
             userId: null
         },
         activity_records: [],
+        userGroup: [],
         groups: [],
         challenges: [],
         drink_records: {
@@ -79,6 +80,9 @@ const store = createStore({
         DELETE_ACTIVITY(state, payload) {
             state.activity_records = state.activity_records.filter(d => d.id !== payload )
         },
+        ADD_USER_GROUP(state, userGroup) {
+            state.userGroup = userGroup
+        },
         ADD_GROUP(state, payload) {
             state.groups.push(payload)
         },
@@ -107,6 +111,9 @@ const store = createStore({
         },
         deleteActivity({ commit }, payload) {
             commit('DELETE_ACTIVITY', payload)
+        },
+        addUserGroup({ commit }, userGroup) {
+            commit('ADD_USER_GROUP', userGroup)
         },
         addGroup({ commit }, payload) {
             commit('ADD_GROUP', payload)
