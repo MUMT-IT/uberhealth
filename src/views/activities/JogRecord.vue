@@ -14,7 +14,7 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in JogRecords.slice(0, 7)" :key="record.id" @click="goToDetail(record.id)">
+              <ion-item detail v-for="record in jogsort.slice(0, 7)" :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
                   <p>
@@ -80,6 +80,11 @@ export default {
     IonFabButton,
     IonIcon
   },
+  data(){
+    return {
+        jogsort: []
+    }
+  },
   setup () {
     return {
       arrowBackCircle
@@ -92,6 +97,10 @@ export default {
     goToDetail (recordId) {
       this.$router.push({ name: 'JogRecordDetail', params: { recordId: recordId}})
     }
+  },
+  updated: function () {
+    this.jogsort = this.JogRecords
+    this.jogsort.sort((a,b)=> b.startDateTime-a.startDateTime)
   }
 }
 </script>

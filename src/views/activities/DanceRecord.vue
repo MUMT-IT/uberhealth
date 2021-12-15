@@ -15,7 +15,7 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in DanceRecords.slice(0,7)"
+              <ion-item detail v-for="record in dancesort.slice(0,7)"
                         :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
@@ -83,6 +83,11 @@ export default defineComponent({
     IonFab,
     IonIcon,
   },
+  data(){
+    return {
+      dancesort: []
+    }
+  },
   setup () {
     return {
       arrowBackCircle,
@@ -96,6 +101,10 @@ export default defineComponent({
     goToDetail (recordId) {
       this.$router.push({ name: 'DanceRecordDetail', params: { recordId: recordId}})
     }
+  },
+  updated() {
+    this.dancesort = this.DanceRecords
+    this.dancesort.sort((a,b)=> b.startDateTime-a.startDateTime)
   }
 })
 </script>

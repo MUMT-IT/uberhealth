@@ -252,7 +252,6 @@ export default defineComponent({
             }
           }
         })
-      console.log(this.countPerson)
       this.usteps.sort((a,b)=> b.steps-a.steps)
       this.gsteps.sort((a,b)=> b.steps-a.steps)
       if(this.usteps.length != 0 ){

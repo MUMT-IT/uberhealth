@@ -15,7 +15,7 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in swimRecords"
+              <ion-item detail v-for="record in swimsort"
                         :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
@@ -84,6 +84,11 @@ export default defineComponent({
     IonFab,
     IonIcon,
   },
+  data(){
+    return {
+      swimsort: []
+    }
+  },
   setup () {
     return {
       arrowBackCircle,
@@ -97,6 +102,10 @@ export default defineComponent({
     goToDetail (recordId) {
       this.$router.push({ name: 'SwimRecordDetail', params: { recordId: recordId}})
     }
+  },
+  updated() {
+    this.swimsort = this.swimRecords
+    this.swimsort.sort((a,b)=> b.startDateTime-a.startDateTime)
   }
 })
 </script>

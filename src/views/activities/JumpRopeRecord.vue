@@ -15,7 +15,7 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in JumpRopeRecords.slice(0,7)"
+              <ion-item detail v-for="record in jumpropesort.slice(0,7)"
                         :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
@@ -84,6 +84,11 @@ export default defineComponent({
     IonFab,
     IonIcon,
   },
+  data(){
+    return {
+      jumpropesort: []
+    }
+  },
   setup () {
     return {
       arrowBackCircle,
@@ -97,6 +102,10 @@ export default defineComponent({
     goToDetail (recordId) {
       this.$router.push({ name: 'JumpRopeRecordDetail', params: { recordId: recordId}})
     }
+  },
+  updated() {
+    this.jumpropesort = this.JumpRopeRecords
+    this.jumpropesort.sort((a,b)=> b.startDateTime-a.startDateTime)
   }
 })
 </script>
