@@ -215,6 +215,7 @@ export default defineComponent({
         querySnapshot.forEach(d => {
           let  data = d.data()
           data.id = d.id
+          'data.steps ต้องเปลี่ยนให้อ่านจาก challenge'
           if(data.steps > 0 ){
             'GroupName Step'
             if(this.groupNameStep[data.userGroupId] === undefined){

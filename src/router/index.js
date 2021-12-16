@@ -209,6 +209,21 @@ const routes = [
     component: () => import('../views/activities/WeightTrainingRecordDetail')
   },
   {
+    path: '/activities/yoga-records',
+    name: 'YogaRecord',
+    component: () => import('../views/activities/YogaRecord')
+  },
+  {
+    path: '/activities/yoga-form',
+    name: 'YogaRecordForm',
+    component: () => import('../views/activities/YogaRecordForm')
+  },
+  {
+    path: '/activities/yoga-record-detail/:recordId',
+    name: 'YogaRecordDetail',
+    component: () => import('../views/activities/YogaRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')

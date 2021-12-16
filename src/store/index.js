@@ -66,6 +66,9 @@ const store = createStore({
         WeightTrainingRecords: state => {
             return state.activity_records.filter(d => d.type === 'weightTraining')
         },
+        YogaRecords: state => {
+            return state.activity_records.filter(d => d.type === 'yoga')
+        }
     },
     mutations: {
         SET_USER(state, user) {
