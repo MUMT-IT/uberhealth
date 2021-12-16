@@ -162,7 +162,7 @@ export default defineComponent({
           estimatedCalories: this.estimatedCal,
           createdAt: Timestamp.fromDate(new Date()),
           type: 'swimming',
-          ExerType: 'Cardio'
+          exerType: 'Cardio'
         }
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
