@@ -30,27 +30,51 @@
                 <ion-list>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="chest"></ion-checkbox>
-                    <ion-label>Chest</ion-label>
+                    <ion-label>Chest
+                    <p>
+                      กล้ามเนื้อหน้าอก
+                    </p>
+                    </ion-label>
                   </ion-item>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="deltoids"></ion-checkbox>
-                    <ion-label>Deltoids</ion-label>
+                    <ion-label>Deltoids
+                    <p>
+                      กล้ามเนื้อหัวไหล่
+                    </p>
+                    </ion-label>
                   </ion-item>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="muscleback"></ion-checkbox>
-                    <ion-label>Back</ion-label>
+                    <ion-label>Back
+                    <p>
+                      กล้ามเนื้อหลัง
+                    </p>
+                    </ion-label>
                   </ion-item>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="legsandCalf"></ion-checkbox>
-                    <ion-label>Legs and Calf</ion-label>
+                    <ion-label>Legs and Calf
+                    <p>
+                      กล้ามเนื้อขาและน่อง
+                    </p>
+                    </ion-label>
                   </ion-item>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="bicepsAndTriceps"></ion-checkbox>
-                    <ion-label>Biceps and Triceps  </ion-label>
+                    <ion-label>Biceps and Triceps
+                    <p>
+                      กล้ามเนื้อหน้าแขนและหลังแขน
+                    </p>
+                    </ion-label>
                   </ion-item>
                   <ion-item>
                     <ion-checkbox slot="start" v-model="abdominal"></ion-checkbox>
-                    <ion-label>Abdominal</ion-label>
+                    <ion-label>Abdominal
+                    <p>
+                      กล้ามเนื้อหน้าท้อง
+                    </p>
+                    </ion-label>
                   </ion-item>
                 </ion-list>
               </ion-item>
@@ -121,7 +145,7 @@ import {
   IonLabel,
   IonRange,
   IonIcon, alertController,
-  IonCheckbox
+  IonCheckbox,
 } from '@ionic/vue';
 
 import { helpCircleOutline } from 'ionicons/icons'
@@ -147,7 +171,7 @@ export default defineComponent({
     IonListHeader,
     IonLabel,
     IonRange,
-    IonCheckbox
+    IonCheckbox,
   },
   setup () {
     return {
