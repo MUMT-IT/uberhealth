@@ -150,7 +150,7 @@ export default {
   },
   mounted() {
     let strDateY = new Date().getFullYear()
-    let strDateM = new Date().getMonth()
+    let strDateM = new Date().getMonth() +1
     let strDateD = new Date().getDate()
     this.DateN = strDateY.toString() + strDateM.toString() + strDateD.toString()
     this.newWeight = this.$store.state.currentWeight
