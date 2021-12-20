@@ -21,7 +21,7 @@
               <ion-list-header>
                 <h4>You</h4>
               </ion-list-header>
-              <ion-item v-for="(ustep,index) in usteps.slice(CaculateUpindex,pointIndex+2)" :key="ustep.id">
+              <ion-item v-for="(ustep,index) in userStepsDisplay.slice(CaculateUpindex,pointIndex+2)" :key="ustep.id">
                 <ion-col>
                   <ion-label>
                     {{ pointIndex + index }}
@@ -50,7 +50,7 @@
             <ion-list-header>
               <h4>Rank Groups</h4>
             </ion-list-header>
-            <ion-item v-for="(gstep,index) in gsteps" :key="gstep.id">
+            <ion-item v-for="(gstep,index) in groupStepsDisplay" :key="gstep.id">
               <ion-col>
                 <ion-label>
                   {{ index+1 }}
@@ -79,7 +79,7 @@
               <ion-list-header>
                 <h4>Rank Top 10</h4>
               </ion-list-header>
-              <ion-item v-for="(ustep,index) in usteps.slice(0,10)" :key="ustep.id">
+              <ion-item v-for="(ustep,index) in userStepsDisplay.slice(0,10)" :key="ustep.id">
                 <ion-col>
                   <ion-label>
                     {{ index+1 }}
@@ -169,7 +169,9 @@ export default defineComponent({
       pointIndex: 0,
       downIndex:0,
       usteps:[],
+      userStepsDisplay:[],
       gsteps:[],
+      groupStepsDisplay:[],
       challengeId: '',
       userGroupsId: null,
       userMembers: {},
@@ -215,6 +217,7 @@ export default defineComponent({
         querySnapshot.forEach(d => {
           let  data = d.data()
           data.id = d.id
+          'data.steps ต้องเปลี่ยนให้อ่านจาก challenge'
           if(data.steps > 0 ){
             'GroupName Step'
             if(this.groupNameStep[data.userGroupId] === undefined){
@@ -252,7 +255,6 @@ export default defineComponent({
             }
           }
         })
-      console.log(this.countPerson)
       this.usteps.sort((a,b)=> b.steps-a.steps)
       this.gsteps.sort((a,b)=> b.steps-a.steps)
       if(this.usteps.length != 0 ){
@@ -390,6 +392,8 @@ export default defineComponent({
             }
           })
         }
+        this.userStepsDisplay = this.usteps
+        this.groupStepsDisplay = this.gsteps
       }
     },
   },

@@ -5,7 +5,7 @@
         <ion-row>
           <ion-col>
             <ion-text>
-              <h2>Weight Training Record</h2>
+              <h1>Yoga Record</h1>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -24,75 +24,20 @@
                 <ion-datetime display-format="MMM DD, YYYY HH:mm" v-model="startDateTime"></ion-datetime>
               </ion-item>
               <ion-item>
-                <h3>Muscle</h3>
+                  <ion-label>Yoga Pose</ion-label>
+                  <ion-input type="text"  v-model="yogapose" placeholder="ชื่อท่า"></ion-input>
+                  <ion-button color="success" @click="addYogaPoses">+</ion-button>
               </ion-item>
-              <ion-item>
-                <ion-list>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="chest"></ion-checkbox>
-                    <ion-label>Chest
-                    <p>
-                      กล้ามเนื้อหน้าอก
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="deltoids"></ion-checkbox>
-                    <ion-label>Deltoids
-                    <p>
-                      กล้ามเนื้อหัวไหล่
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="muscleback"></ion-checkbox>
-                    <ion-label>Back
-                    <p>
-                      กล้ามเนื้อหลัง
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="legsandCalf"></ion-checkbox>
-                    <ion-label>Legs and Calf
-                    <p>
-                      กล้ามเนื้อขาและน่อง
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="bicepsAndTriceps"></ion-checkbox>
-                    <ion-label>Biceps and Triceps
-                    <p>
-                      กล้ามเนื้อหน้าแขนและหลังแขน
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item>
-                    <ion-checkbox slot="start" v-model="abdominal"></ion-checkbox>
-                    <ion-label>Abdominal
-                    <p>
-                      กล้ามเนื้อหน้าท้อง
-                    </p>
-                    </ion-label>
-                  </ion-item>
-                </ion-list>
-              </ion-item>
-              <ion-item class="ion-margin-bottom">
-                <ion-label position="floating">Weight Using (kg)</ion-label>
-                <ion-input type="text" v-model="weightusing" placeholder="น้ำหนักที่ใช้หน่วยเป็นกิโลกรัม"></ion-input>
-              </ion-item>
-              <ion-item class="ion-margin-bottom">
-                <ion-label position="floating">Repetition</ion-label>
-                <ion-input type="number" min="0" step="100" v-model="reps" placeholder="จำนวนครั้งที่ทำได้"></ion-input>
-              </ion-item>
-              <ion-item class="ion-margin-bottom">
-                <ion-label position="floating">SET</ion-label>
-                <ion-input type="number" min="0" step="100" v-model="countset" placeholder="จำนวนชุด"></ion-input>
+              <ion-item v-for="(pose,index) in yogaposes"
+                        :key="pose.id">
+                <ion-label>
+                  {{ pose.toString() }}
+                </ion-label>
+                <ion-button color="danger" @click="removeYogaposes(index)">-</ion-button>
               </ion-item>
               <ion-item class="ion-margin-bottom">
                 <ion-label position="floating">Time (min)</ion-label>
-                <ion-input type="number" min="0" step="100" v-model="min" placeholder="ใช้เวลาทั้งหมด(นาที)"></ion-input>
+                <ion-input type="number" min="0" step="100" v-model="min" placeholder="เวลาหน่วยเป็นนาที"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">Calculated calories</ion-label>
@@ -145,7 +90,6 @@ import {
   IonLabel,
   IonRange,
   IonIcon, alertController,
-  IonCheckbox,
 } from '@ionic/vue';
 
 import { helpCircleOutline } from 'ionicons/icons'
@@ -154,7 +98,7 @@ import { db } from '../../firebase'
 import { collection, addDoc, Timestamp } from '@firebase/firestore'
 
 export default defineComponent({
-  name: "WeightTrainingRecordForm",
+  name: "YogaRecordForm",
   components: {
     IonIcon,
     IonContent,
@@ -171,7 +115,6 @@ export default defineComponent({
     IonListHeader,
     IonLabel,
     IonRange,
-    IonCheckbox,
   },
   setup () {
     return {
@@ -181,32 +124,24 @@ export default defineComponent({
   data () {
     return {
       startDateTime: new Date().toISOString(),
-      weightusing : '',
+      yogapose: '',
+      yogaposes: [],
       min: 0,
-      reps: 0,
-      countset: 0,
       calories: 0,
       intensity: 1,
-      chest: false,
-      deltoids: false,
-      muscleback: false,
-      legsandCalf: false,
-      bicepsAndTriceps: false,
-      abdominal: false,
-      muscle:[]
     }
   },
   computed: {
     isFormValid () {
       return (this.startDateTime != '' || this.startDateTime != null)
-          && (this.min != 0 || this.min != null)
+          && (this.min != '' || this.min != null)
           && (this.estimatedCal > 0)
     },
     estimatedCal () {
       let Cainten = 1
       if( this.intensity == 2){Cainten = 1.5}
       if( this.intensity == 2){Cainten = 2}
-      return (this.min * 90) / 30 * Cainten
+      return (this.min * 210) / 30 * Cainten
     },
   },
   methods: {
@@ -224,37 +159,40 @@ export default defineComponent({
       const { role } = await alert.onDidDismiss();
       console.log('onDidDismiss resolved with role', role);
     },
+    addYogaPoses(){
+      if(this.yogapose != ''){
+        this.yogaposes.push(this.yogapose)
+        this.yogapose = ''
+      }
+    },
+    removeYogaposes(index){
+      this.yogaposes.splice(index, 1)
+    },
     saveData () {
-      if(this.chest==true){this.muscle.push('Chest')}
-      if(this.deltoids==true){this.muscle.push('Deltoids')}
-      if(this.muscleback==true){this.muscle.push('Back')}
-      if(this.legsandCalf==true){this.muscle.push('Legs and Calf')}
-      if(this.bicepsAndTriceps==true){this.muscle.push('Biceps and Triceps')}
-      if(this.abdominal==true){this.muscle.push('Abdominal')}
-
       if (this.isFormValid) {
         const ref = collection(db, 'activity_records')
         let data = {
           userId: this.$store.state.user.userId,
           startDateTime: Timestamp.fromDate(new Date(this.startDateTime)),
-          muscle: this.muscle,
-          weightusing: this.weightusing,
-          reps: this.reps,
-          countset: this.countset,
+          yogaposes: this.yogaposes,
           min: this.min,
           calories: this.calories,
           estimatedCalories: this.estimatedCal,
           createdAt: Timestamp.fromDate(new Date()),
-          type: 'weightTraining',
-          exerType: 'Resistance'
+          type: 'yoga',
+          exerType: 'Flexibility'
         }
         addDoc(ref, data).then((docRef)=>{
           data.id = docRef.id
           this.$store.dispatch('addActivity',  data)
-          this.$router.push({ name: 'WeightTrainingRecord' })
+          this.$router.push({ name: 'YogaRecord' })
         })
       }
     }
+  },
+  mounted() {
+    console.log(this.$store.state.user)
+    console.log(this.$store.state.activity_records.length)
   }
 })
 </script>
