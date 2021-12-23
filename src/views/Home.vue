@@ -151,6 +151,7 @@ export default defineComponent({
         let data = d.data()
         data.id = d.id
         this.$store.dispatch('addGroup', data)
+        // TODO: change the method to setUserGroup
         this.$store.dispatch('addUserGroup',data)
       })
     },
