@@ -6,7 +6,7 @@
           <ion-col>
             <ion-text>
               <div class="ion-text-center">
-                <h1>Sport Record</h1>
+                <h1>Yoga Record</h1>
                 <p>{{ this.user.displayName }}</p>
               </div>
             </ion-text>
@@ -15,12 +15,12 @@
         <ion-row>
           <ion-col>
             <ion-list>
-              <ion-item detail v-for="record in sportsort.slice(0,7)"
+              <ion-item detail v-for="record in yogasort.slice(0,7)"
                         :key="record.id" @click="goToDetail(record.id)">
                 <ion-label>
                   {{ record.startDateTime.toDate().toLocaleString() }}
                   <p>
-                    {{ record.sportName }}
+                    {{ ArraytoText(record.yogaposes) }}
                     {{ record.min }} min,
                     {{ record.estimatedCalories.toFixed(1) }} Cal
                   </p>
@@ -31,7 +31,7 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-button expand="block" @click="$router.push({ name: 'SportRecordForm' })">
+            <ion-button expand="block" @click="$router.push({ name: 'YogaRecordForm' })">
               Add
             </ion-button>
           </ion-col>
@@ -68,7 +68,7 @@ import { arrowBackCircle } from 'ionicons/icons'
 import {mapGetters, mapState} from "vuex";
 
 export default defineComponent({
-  name: "SportRecord",
+  name: "YogaRecord",
   components: {
     IonContent,
     IonPage,
@@ -86,7 +86,7 @@ export default defineComponent({
   },
   data() {
     return {
-      sportsort: []
+      yogasort : []
     }
   },
   setup () {
@@ -96,16 +96,23 @@ export default defineComponent({
   },
   computed: {
     ...mapState(['user', 'activity_records']),
-    ...mapGetters(['SportRecords']),
+    ...mapGetters(['YogaRecords']),
   },
   methods: {
     goToDetail (recordId) {
-      this.$router.push({ name: 'SportRecordDetail', params: { recordId: recordId}})
+      this.$router.push({ name: 'YogaRecordDetail', params: { recordId: recordId}})
+    },
+    ArraytoText(arr){
+      let txt =  ''
+      for (const arrKey in arr) {
+        txt += arr[arrKey] + ','
+      }
+      return txt
     }
   },
   updated() {
-    this.sportsort = this.SportRecords
-    this.sportsort.sort((a,b)=> b.startDateTime-a.startDateTime)
+    this.yogasort = this.YogaRecords
+    this.yogasort.sort((a,b)=> b.startDateTime-a.startDateTime)
   }
 })
 </script>

@@ -6,7 +6,7 @@
           <ion-col>
             <ion-text>
               <div class="ion-text-center">
-                <h3>Dance Record Detail</h3>
+                <h3>Yoga Record Detail</h3>
               </div>
             </ion-text>
           </ion-col>
@@ -20,10 +20,16 @@
                     {{ record.startDateTime.toDate().toLocaleString() }}
                   </p>
                   <p>
-                    Estimated Calories {{ record.estimatedCalories }}
+                    Yoga Poses: {{ ArrayToText(record.yogaposes) }}
                   </p>
                   <p>
-                    Calories {{ record.calories }}
+                    min: {{ record.min }} min
+                  </p>
+                  <p>
+                    Estimated Calories: {{ record.estimatedCalories }}
+                  </p>
+                  <p>
+                    Calories: {{ record.calories }}
                   </p>
                 </ion-label>
               </ion-item>
@@ -78,7 +84,7 @@
         </ion-row>
       </ion-grid>
       <ion-fab vertical="top" horizontal="start" slot="fixed">
-        <ion-fab-button @click="$router.push({ name: 'DanceRecord' })">
+        <ion-fab-button @click="$router.push({ name: 'YogaRecord' })">
           <ion-icon :icon="arrowBackCircle"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -114,7 +120,7 @@ import {doc, getDoc, getDocs, collection, deleteDoc, query, where, addDoc } from
 import {mapState} from "vuex";
 
 export default defineComponent({
-  name: "DanceRecordDetail",
+  name: "YogaRecordDetail",
   components: {
     IonContent,
     IonPage,
@@ -142,7 +148,6 @@ export default defineComponent({
     return {
       record: {
         startDateTime: null,
-        distances: null,
         estimatedCalories: null,
         calories: null,
       },
@@ -222,7 +227,7 @@ export default defineComponent({
         deleteDoc(ref).then(async () => {
           await this.presentAlert()
           this.$store.dispatch('deleteActivity', this.record.id)
-          this.$router.push({ name: 'DanceRecord' })
+          this.$router.push({ name: 'YogaRecord' })
         })
       }
     },
@@ -263,6 +268,17 @@ export default defineComponent({
           });
       await alert.present();
       await alert.onDidDismiss();
+    },
+    ArrayToText(arr){
+      let txt = ''
+      for (const arrKey in arr) {
+        if(arrKey == 0){
+          txt += arr[arrKey]
+        }else{
+          txt += ',' + arr[arrKey]
+        }
+      }
+      return txt
     },
   },
   mounted() {

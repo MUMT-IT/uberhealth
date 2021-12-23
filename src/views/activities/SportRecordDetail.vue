@@ -187,7 +187,22 @@ export default defineComponent({
             if (snapshot.exists()) {
               let data = snapshot.data()
               data.id = snapshot.id
-              this.challenges.push(data)
+              'chkeck Date Challenge'
+              let startDate = new Date(data.dates[0].seconds * 1000)
+              let endDate = new Date(data.dates[1].seconds *1000)
+              endDate.setDate(endDate.getDate()+1)
+              let NowDate = new Date()
+              let DateGo  = NowDate - startDate
+              let DateEnd = NowDate - endDate
+              let chkchallenge = ''
+              if((DateGo > 0) && (DateEnd < 0)){
+                chkchallenge = 'Open'
+              }else{
+                chkchallenge = 'Close'
+              }
+              if(chkchallenge == 'Open'){
+                this.challenges.push(data)
+              }
             }
           })
         }

@@ -209,6 +209,21 @@ const routes = [
     component: () => import('../views/activities/WeightTrainingRecordDetail')
   },
   {
+    path: '/activities/yoga-records',
+    name: 'YogaRecord',
+    component: () => import('../views/activities/YogaRecord')
+  },
+  {
+    path: '/activities/yoga-form',
+    name: 'YogaRecordForm',
+    component: () => import('../views/activities/YogaRecordForm')
+  },
+  {
+    path: '/activities/yoga-record-detail/:recordId',
+    name: 'YogaRecordDetail',
+    component: () => import('../views/activities/YogaRecordDetail')
+  },
+  {
     path: '/challenges/:recordId',
     name: 'ChallengeDetail',
     component: () => import('../views/ChallengeDetail')
@@ -232,6 +247,16 @@ const routes = [
     path: '/diet/foodsearch',
     name: 'foodsearch',
     component: () => import('../views/health/diet/FoodSearch')
+  },
+  {
+    path: '/lab/lab-record-form',
+    name: 'LabRecordForm',
+    component: () => import('../views/health/lab/LabRecordForm')
+  },
+  {
+    path: '/lab/lab-record',
+    name: 'LabRecord',
+    component: () => import('../views/health/lab/LabRecord')
   }
 ]
 
