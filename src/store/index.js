@@ -18,6 +18,7 @@ const store = createStore({
             userId: null
         },
         activity_records: [],
+        // TODO: set userGroup to null
         userGroup: [],
         groups: [],
         challenges: [],
@@ -80,6 +81,7 @@ const store = createStore({
         DELETE_ACTIVITY(state, payload) {
             state.activity_records = state.activity_records.filter(d => d.id !== payload )
         },
+        // change to ADD_USER_GROUP
         ADD_USER_GROUP(state, userGroup) {
             state.userGroup = userGroup
         },
@@ -112,6 +114,7 @@ const store = createStore({
         deleteActivity({ commit }, payload) {
             commit('DELETE_ACTIVITY', payload)
         },
+        // TODO: change to setUserGroup
         addUserGroup({ commit }, userGroup) {
             commit('ADD_USER_GROUP', userGroup)
         },
