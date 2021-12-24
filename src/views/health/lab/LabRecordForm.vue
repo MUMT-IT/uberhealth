@@ -4,13 +4,18 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-list-header>
+            <div class="ion-text-center">
               <ion-text>
                 <h3>
-                  Lab New record / รายการใหม่
+                  บันทึกผลตรวจสุขภาพ
                 </h3>
+                <h4>Lab Tests Record</h4>
               </ion-text>
-            </ion-list-header>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
             <ion-list>
               <ion-item>
                 <ion-label position="floating">Date</ion-label>
@@ -34,13 +39,13 @@
                   </ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-input placeholder="กรอกตัวเลข" v-model="systolic1"></ion-input>
+                  <ion-input placeholder="กรอกตัวเลข" v-model="systolic"></ion-input>
                 </ion-col>
                 <ion-col size="1">
                   <ion-label>/</ion-label>
                 </ion-coL>
                 <ion-col>
-                  <ion-input placeholder="กรอกตัวเลข" v-model="systolic2"></ion-input>
+                  <ion-input placeholder="กรอกตัวเลข" v-model="diastolic"></ion-input>
                 </ion-col>
               </ion-item>
               <ion-item>
@@ -170,6 +175,11 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+      <ion-fab vertical="top" horizontal="start" slot="fixed">
+        <ion-fab-button @click="$router.push({ name: 'Health' })">
+          <ion-icon :icon="arrowBackCircle"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
@@ -187,12 +197,17 @@ import {
   IonLabel,
   IonInput,
   IonButton,
-  IonDatetime
+  IonDatetime,
+  IonItem,
+  IonIcon,
+  IonFab,
+  IonFabButton
 } from '@ionic/vue';
 import {defineComponent} from 'vue';
 import {mapState} from "vuex";
 import {db} from "@/firebase";
 import { collection, addDoc, Timestamp } from '@firebase/firestore'
+import { arrowBackCircle } from 'ionicons/icons'
 
 export default defineComponent({
   name: "LabRecordForm",
@@ -208,27 +223,31 @@ export default defineComponent({
     IonLabel,
     IonInput,
     IonButton,
-    IonDatetime
+    IonDatetime,
+    IonItem,
+    IonIcon,
+    IonFab,
+    IonFabButton
   },
   computed: {
     ...mapState(['user']),
     isFormValid() {
-      return ((this.labGlu != null) && (this.labGlu != ''))
-          || ((this.labBUN != null) && (this.labBUN != ''))
-          || ((this.labCre != null) && (this.labCre != ''))
-          || ((this.labUA != null) && (this.labUA != ''))
-          || ((this.labCHO != null) && (this.labCHO != ''))
-          || ((this.labHDL != null) && (this.labHDL != ''))
-          || ((this.labTG != null) && (this.labTG != ''))
-          || ((this.labLDL != null) && (this.labLDL != ''))
-          || ((this.systolic1 != null) && (this.systolic1 != '') && (this.systolic2 != null) && (this.systolic2 != ''))
-          || ((this.heartrate != null) && (this.heartrate != ''))
+      return this.isNotBlank(this.labGlu) || this.isNotBlank(this.labBUN) || this.isNotBlank(this.labCre)
+          || this.isNotBlank(this.labUA) || this.isNotBlank(this.labCHO)|| this.isNotBlank(this.labHDL)
+          || this.isNotBlank(this.labTG) || this.isNotBlank(this.labLDL)
+          || this.isNotBlank(this.heartrate)
+          || (this.isNotBlank(this.systolic) && (this.isNotBlank(this.diastolic)))
     },
+  },
+  setup () {
+    return {
+      arrowBackCircle
+    }
   },
   data() {
     return {
       labDateTime: new Date().toISOString(),
-      labTest: [],
+      labTest: {},
       labGlu: null,
       labBUN: null,
       labCre: null,
@@ -237,68 +256,37 @@ export default defineComponent({
       labTG: null,
       labHDL: null,
       labLDL: null,
-      systolic1: null,
-      systolic2: null,
+      systolic: null,
+      diastolic: null,
       heartrate: null,
     }
   },
   methods: {
-    addLabTest(){
-      if((this.labGlu != null) && (this.labGlu != '')){
-        let lab = {'labGlu' : this.labGlu}
-        this.labTest.push(lab)
-      }
-      if((this.labBUN != null) && (this.labBUN != '')){
-        let lab = {'labBUN' : this.labBUN}
-        this.labTest.push(lab)
-      }
-      if((this.labCre != null) && (this.labCre != '')){
-        let lab = {'labCre' : this.labCre}
-        this.labTest.push(lab)
-      }
-      if((this.labUA != null) && (this.labUA != '')){
-        let lab = {'labUA' : this.labUA}
-        this.labTest.push(lab)
-      }
-      if((this.labCHO != null) && (this.labCHO != '')){
-        let lab = {'labCHO' : this.labCHO}
-        this.labTest.push(lab)
-      }
-      if((this.labTG != null) && (this.labTG != '')){
-        let lab = {'labTG' : this.labTG}
-        this.labTest.push(lab)
-      }
-      if((this.labHDL != null) && (this.labHDL != '')){
-        let lab = {'labHDL' : this.labHDL}
-        this.labTest.push(lab)
-      }
-      if((this.labLDL != null) && (this.labLDL != '')){
-        let lab = {'labLDL' : this.labLDL}
-        this.labTest.push(lab)
-      }
-      if((this.systolic1 != null) && (this.systolic1 != '') && (this.systolic2 != null) && (this.systolic2 != '')){
-        let lab = {
-          'systolic1' : this.systolic1,
-          'systolic2' : this.systolic2
-        }
-        this.labTest.push(lab)
-      }
-      if((this.heartrate != null) && (this.heartrate != '')){
-        let lab = {'heartrate' : this.heartrate}
-        this.labTest.push(lab)
-      }
+    isNotBlank (value) {
+      return value !== null && value !== ''
     },
     saveData() {
-      this.addLabTest()
       const ref = collection(db, 'lab_records')
       let data = {
         userId: this.$store.state.user.userId,
         labDateTime: Timestamp.fromDate(new Date(this.labDateTime)),
-        labTest:  this.labTest
+        labTest:  {
+          labGlu: this.labGlu,
+          labBUN: this.labBUN,
+          labCre: this.labCre,
+          labUA: this.labUA,
+          labCHO: this.labCHO,
+          labTG: this.labTG,
+          labHDL: this.labHDL,
+          labLDL: this.labLDL,
+          systolic: this.systolic,
+          diastolic: this.diastolic,
+          heartrate: this.heartrate,
+        }
       }
       addDoc(ref, data).then((docRef)=>{
         data.id = docRef.id
-        this.$router.push({ name: 'BikeRecord' })
+        this.$router.push({ name: 'LabRecord' })
       })
     }
   }

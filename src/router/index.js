@@ -249,6 +249,11 @@ const routes = [
     component: () => import('../views/health/diet/FoodSearch')
   },
   {
+    path: '/lab/lab-records',
+    name: 'LabRecord',
+    component: () => import('../views/health/lab/LabRecord')
+  },
+  {
     path: '/lab/lab-record-form',
     name: 'LabRecordForm',
     component: () => import('../views/health/lab/LabRecordForm')
