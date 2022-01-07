@@ -30,7 +30,7 @@
                     <p>น้ำหนักตัว</p>
                   </ion-label>
                 </ion-item>
-                <ion-item inset="true" detail @click="$router.push({name:'BodyCompositionRecordForm'})">
+                <ion-item inset="true" detail @click="$router.push({name:'BodyCompositionRecord'})">
                   <ion-icon slot="start" :icon="manOutline"></ion-icon>
                   <ion-label>Body Composition</ion-label>
                 </ion-item>

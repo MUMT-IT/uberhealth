@@ -126,7 +126,7 @@ export default defineComponent({
         addDoc(ref, data).then((docRef) => {
           data.id = docRef.id
         })
-        console.log('aa')
+        this.$router.push({ name: 'BodyCompositionRecord' })
       }
     }
   }

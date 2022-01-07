@@ -262,6 +262,11 @@ const routes = [
     path: '/health/body-composition-record-form',
     name: 'BodyCompositionRecordForm',
     component: () => import('../views/health/bodycomposition/BodyCompositionRecordForm')
+  },
+  {
+    path: '/health/body-composition-record',
+    name: 'BodyCompositionRecord',
+    component: () => import('../views/health/bodycomposition/BodyCompositionRecord')
   }
 ]
 
