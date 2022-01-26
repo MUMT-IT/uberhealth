@@ -65,8 +65,7 @@ import {defineComponent} from 'vue';
 import {mapState} from "vuex";
 import {Chart, registerables} from 'chart.js';
 import {db} from "@/firebase";
-import {collection, getDocs, query, where} from '@firebase/firestore'
-import {orderBy} from "firebase/firestore";
+import {collection, getDocs, query, where,orderBy} from '@firebase/firestore'
 
 Chart.register(...registerables);
 export default defineComponent({
@@ -121,6 +120,7 @@ export default defineComponent({
       });
     },
     async BindChart() {
+      console.log('Test')
       let ref = collection(db, 'bodycomposition_records')
       let q = query(ref, where("userId", "==", this.$store.state.user.userId), orderBy('bodycomposidate', 'asc'))
       let querySnapshot = await getDocs(q)
@@ -168,7 +168,7 @@ export default defineComponent({
       this.createChart(visceralctx, data_visceral, label_visceral, labels_visceral, 'rgb(38, 194, 129)')
     }
   },
-  updated() {
+  mounted() {
     this.BindChart()
   },
 });
